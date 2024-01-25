@@ -1,9 +1,7 @@
 import express from "express";
-import { loginUserSchema, userSchema } from "./user.validation.js";
-import { User } from "./user.model.js";
-import bcrypt from "bcrypt";
 import { validateReqBody } from "../middleware/validation.middleware.js";
-import { registerUser } from "./user.service.js";
+import { loginUser, registerUser } from "./user.service.js";
+import { loginUserSchema, userSchema } from "./user.validation.js";
 
 const router = express.Router();
 
@@ -20,12 +18,10 @@ router.post(
 
 router.post(
   "/user/login",
+  // login user takes two functions, one for validating and another for logging in the user. Here we are using the validateReqBody global validation function and passing the userSchema to the function for validation.
   validateReqBody(loginUserSchema),
-
-  (req, res, next) => {
-    console.log(req.body);
-    return res.status(200).send({ message: "Login successful" });
-  }
+  loginUser
 );
 
 export default router;
+tr78iu
