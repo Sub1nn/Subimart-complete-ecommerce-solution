@@ -1,8 +1,16 @@
 import mongoose from "mongoose";
+import { productCategories } from "../constants/general.constant.js";
 
+// set rule
 const productSchema = new mongoose.Schema(
   {
     name: {
+      type: String,
+      required: true,
+      trim: true,
+      max: 30,
+    },
+    brand: {
       type: String,
       required: true,
       trim: true,
@@ -13,12 +21,18 @@ const productSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
-    category: {
-      type: [String],
+    quantity: {
+      type: Number,
       required: true,
+      min: 1,
+    },
+    category: {
+      type: String,
+      required: true,
+      enum: productCategories,
     },
     image: {
-      type: [String],
+      type: String,
       required: false,
       default: null,
       nullable: true,
@@ -29,6 +43,7 @@ const productSchema = new mongoose.Schema(
       trim: true,
       maxlength: 1000,
     },
+
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -39,6 +54,7 @@ const productSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+// create table
 
 const Product = mongoose.model("Product", productSchema);
 
