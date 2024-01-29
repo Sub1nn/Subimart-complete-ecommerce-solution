@@ -4,6 +4,8 @@ import { productSchema } from "./product.validation.js";
 import { isSeller, isUser } from "../middleware/authentication.middleware.js";
 import Product from "./product.model.js";
 import mongoose from "mongoose";
+import { checkMongoIdValidity } from "../utils/check.mongo.id.validity.js";
+import { checkProductOwnership } from "../middleware/check.product.ownership.js";
 
 const router = express.Router();
 
@@ -59,22 +61,31 @@ router.get("/product/details/:id", isUser, async (req, res) => {
 
 // delete product
 
-router.delete("/product/delete/:id", isSeller, async(req,res) => {
-  // extract id from req.params
-  const productId = req.params.id
-  // check for mongo id validity
-  const isValidMongoId = mongoose.Types.ObjectId.isValid(productId)
-  // if not valid mongo id
-  if(!isValidMongoId){
-    return res.status(400).send({message: "Invalid mongo id"})
+router.delete(
+  "/product/delete/:id",
+  isSeller,
+  checkMongoIdValidity,
+  checkProductOwnership,
+  async (req, res) => {
+    const { id } = req.params;
+    await Product.deleteOne(id);
+    return res.status(200).send({ message: "Product is deleted successfully" });
   }
-  //find product
-  const product = await Product.findOne({_id: productId})
-  // if not product, throw error
-  
-})
+);
 
+// edit a product
 
-
+router.put(
+  "/product/update/:id",
+  isSeller,
+  checkMongoIdValidity,
+  checkProductOwnership,
+  async (req, res) => {
+    const { id } = req.params;
+    const newValues = req.body;
+    await Product.updateOne({ _id: id }, { $set: newValues });
+    return res.status(200).send({ message: "Product is updated successfully" });
+  }
+);
 
 export default router;
