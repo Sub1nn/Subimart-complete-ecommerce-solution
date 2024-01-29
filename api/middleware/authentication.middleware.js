@@ -18,7 +18,7 @@ export const isUser = async (req, res, next) => {
   let payload;
 
   try {
-    payload = jwt.verify(token, "mysecretkey");
+    payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
   } catch (error) {
     return res.status(401).send({ message: "Unauthorized." });
   }
@@ -50,7 +50,7 @@ export const isSeller = async (req, res, next) => {
   let payload;
 
   try {
-    payload = jwt.verify(token, "mysecretkey");
+    payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
   } catch (error) {
     return res.status(401).send({ message: "Unauthorized." });
   }
@@ -67,6 +67,42 @@ export const isSeller = async (req, res, next) => {
   }
 
   req.loggedInUser = user;
+  req.loggedInUserId = user._id;
 
+  next();
+};
+
+// buyer role
+
+export const isBuyer = () => {
+  // get the authorization from req.headers.authorization and split it and get the token from eg "bearer token"
+  const authorization = req.headers.authorization;
+  const splittedToken = authorization?.split(" ");
+  const token = splittedToken.lengths === 2 ? splittedToken[1] : null;
+  // if not token throw error
+  if (!token) {
+    return res.status(401).send({ message: "Unauthorized token holder" });
+  }
+  // let a payload to store token information after jwt verification
+  let payload;
+  try {
+    payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  } catch (error) {
+    return res.status.send({ message: "Unauthorized" });
+  }
+  // find user
+  const user = User.findOne({ email: payload.email });
+  // if not user throw error
+  if (!user) {
+    return res.status(401).send({ message: "Unauthorized." });
+  }
+  // if user role is not buyer throw error
+  if (user.role !== "buyer") {
+    return res.status(401).send({ message: "Unauthorized." });
+  }
+
+  // put the user information as loggedInUser inside req, explicitly you can put the more specific user information like user._id as loggedInUserId inside req.
+  req.loggedInUser = user;
+  req.loggedInUserId = user._id;
   next();
 };
