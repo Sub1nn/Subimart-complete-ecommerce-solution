@@ -2,6 +2,7 @@ import express from "express";
 
 import { isBuyer } from "../middleware/authentication.middleware.js";
 import Product from "./cart.model.js";
+import { checkMongoIdValidity } from "../utils/check.mongo.id.validity.js";
 
 const router = express.Router();
 
@@ -159,7 +160,29 @@ router.put(
         },
       }
     );
+    // send response
     return res.status(200).send({ message: "Quantity is updated" });
+  }
+);
+
+// remove item from cart
+
+router.delete(
+  "/cart/remove/:id",
+  isBuyer,
+  checkMongoIdValidity,
+  async (req, res) => {
+    // extract product Id from req.params
+    const productId = req.params.id;
+
+    // delete that product from cart
+    await Cart.deleteOne({ productId: productId, buyerId: req.loggedInUserId });
+
+    // send response
+
+    return res
+      .status(200)
+      .send({ message: "Item is removed from cart successfully." });
   }
 );
 
