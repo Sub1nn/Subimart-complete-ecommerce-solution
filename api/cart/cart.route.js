@@ -186,4 +186,14 @@ router.delete(
   }
 );
 
+// flush cart
+
+router.delete("/cart/flush", isBuyer, async (req, res) => {
+  // delete all items from cart
+  await Cart.deleteMany({ buyerId: req.loggedInUserId });
+
+  // send response
+  return res.status(200).send({ message: "Cart is flushed successfully." });
+});
+
 export default router;
