@@ -76,4 +76,91 @@ router.post(
   }
 );
 
+// update quantity for the cart items
+
+router.put(
+  "/cart/item/update-quantity",
+  isBuyer,
+  async (req, res, next) => {
+    // get update-data from req.body
+    const updateData = req.body;
+    try {
+      const validatedData = await addProductToCartValidationSchema.validate(
+        updateData
+      );
+      req.body = validatedData;
+      next();
+    } catch (error) {
+      return res.status(400).send(error.message);
+    }
+  },
+  async (req, res) => {
+    // extract update data from req.body
+    const updateData = req.body;
+    // check productId for mongoId validity
+    const isValidMongoId = mongoose.Types.ObjectId.isValid(
+      updateData.productId
+    );
+    // if not valid mongo id
+    if (!isValidMongoId) {
+      return res.status(400).send({ message: "Invalid mongo id" });
+    }
+    // check/find product using productId
+    const product = await Product.findOne({ _id: updateData.productId });
+
+    // if not product, throw error
+    if (!product) {
+      return res.status(404).send({ message: "Product does not exist." });
+    }
+
+    // find cartItem using productId and buyerId
+    const cartItem = await Cart.findOne({
+      productId: updateData.productId,
+      buyerId: updateData.buyerId,
+    });
+    if (!cartItem) {
+      return res
+        .status(409)
+        .send({ message: "Please add item to the cart first." });
+    }
+
+    // do quantity verification
+    const newOrderedQuantity =
+      updateData.action === "inc"
+        ? cartItem.orderedQuantity + 1
+        : cartItem.orderedQuantity - 1;
+
+    // ? check if new ordered quantity is greater then the product quantity
+    //   if (newOrderedQuantity > product.quantity) {
+    //     return res.status(422).send({ message: "Product is outnumbered." });
+    //   }
+    // update quantity
+    //   cartItem.orderedQuantity = newOrderedQuantity;
+    //   await cartItem.save();
+    // return response
+    //   return res
+    //  .status(200)
+    //  .send({ message: "Item quantity updated successfully." });
+    if (newOrderedQuantity > product.quantity) {
+      return res.status(422).send({ message: "Product is outnumbered." });
+    }
+    // make sure the newOrderedQuantity is at least one
+    if (newOrderedQuantity < 1) {
+      return res
+        .status(422)
+        .send({ message: "Product count should at least be 1" });
+    }
+    // update Quantity
+    await Cart.updateOne(
+      { productId: updateData.productId, buyerId: req.loggedInUserId },
+      {
+        $set: {
+          orderedQuantity: newOrderedQuantity,
+        },
+      }
+    );
+    return res.status(200).send({ message: "Quantity is updated" });
+  }
+);
+
 export default router;
