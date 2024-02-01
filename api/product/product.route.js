@@ -19,7 +19,7 @@ router.post(
     //    extract new product from req.body
     const newProduct = req.body;
 
-    // we need logged in user id for product owner id
+    // set loggedInUserId as newProduct.ownerId
     newProduct.ownerId = req.loggedInUser._id;
 
     // create product
@@ -29,35 +29,34 @@ router.post(
   }
 );
 
-// get product details
+// get a single product details from product :id
 
-router.get("/product/details/:id", isUser, async (req, res) => {
-  // extract id from req.params
-  const productId = req.params.id;
+router.get(
+  "/product/details/:id",
+  isUser,
+  checkMongoIdValidity,
+  async (req, res) => {
+    // extract id from req.params
+    const productId = req.params.id;
 
-  // check for mongo id validity
-  const isValidMongoId = mongoose.Types.ObjectId.isValid(productId);
+    // find product and keep in a variable requiredProduct
+    const requiredProduct = await Product.findOne({ _id: productId });
 
-  // if not valid mongo id, throw error
-  if (!isValidMongoId) {
-    return res.status(400).send({ message: "Invalid mongo id." });
+    // if not product, throw error
+
+    if (!requiredProduct) {
+      return res.status(404).send({ message: "Product does not exist." });
+    }
+
+    //   hide ownerId
+    requiredProduct.ownerId = undefined;
+
+    // send product details as response
+    return res
+      .status(200)
+      .send({ message: "success", product: requiredProduct });
   }
-
-  // find product
-  const requiredProduct = await Product.findOne({ _id: productId });
-
-  // if not product, throw error
-
-  if (!requiredProduct) {
-    return res.status(404).send({ message: "Product does not exist." });
-  }
-
-  //   hide ownerId
-  requiredProduct.ownerId = undefined;
-
-  // send product details as response
-  return res.status(200).send({ message: "success", product: requiredProduct });
-});
+);
 
 // delete product
 
@@ -67,7 +66,9 @@ router.delete(
   checkMongoIdValidity,
   checkProductOwnership,
   async (req, res) => {
+    // get id from req.params
     const { id } = req.params;
+    // delete that one product
     await Product.deleteOne(id);
     return res.status(200).send({ message: "Product is deleted successfully" });
   }
@@ -80,12 +81,19 @@ router.put(
   isSeller,
   checkMongoIdValidity,
   checkProductOwnership,
+  validateReqBody(productSchema),
   async (req, res) => {
+    // get id from req.params
     const { id } = req.params;
+    // get new values from req.body
     const newValues = req.body;
-    await Product.updateOne({ _id: id }, { $set: newValues });
+    // update product
+    await Product.updateOne({ _id: id }, { $set: { ...newValues } });
+    // send response with message
     return res.status(200).send({ message: "Product is updated successfully" });
   }
 );
+
+// get all product list by buyerkjnmio
 
 export default router;
