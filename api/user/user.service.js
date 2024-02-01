@@ -54,5 +54,7 @@ export const loginUser = async (req, res) => {
     { expiresIn: "24h" }
   );
   // return appropriate response and send user and accessToken as user and token
-  return res.status(200).send({ user: user, token: accessToken });
+  return res
+    .status(200)
+    .send({ message: "Success", user: user, token: accessToken });
 };
