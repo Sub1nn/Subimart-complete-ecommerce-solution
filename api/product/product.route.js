@@ -1,11 +1,16 @@
 import express from "express";
 import { validateReqBody } from "../middleware/validation.middleware.js";
 import { productSchema } from "./product.validation.js";
-import { isSeller, isUser } from "../middleware/authentication.middleware.js";
+import {
+  isBuyer,
+  isSeller,
+  isUser,
+} from "../middleware/authentication.middleware.js";
 import Product from "./product.model.js";
-import mongoose from "mongoose";
+// import mongoose from "mongoose";
 import { checkMongoIdValidity } from "../utils/check.mongo.id.validity.js";
 import { checkProductOwnership } from "../middleware/check.product.ownership.js";
+import { paginationSchema } from "./product.validation.js";
 
 const router = express.Router();
 
@@ -67,9 +72,9 @@ router.delete(
   checkProductOwnership,
   async (req, res) => {
     // get id from req.params
-    const { id } = req.params;
+    const productId = req.params.id;
     // delete that one product
-    await Product.deleteOne(id);
+    await Product.deleteOne({ _id: productId });
     return res.status(200).send({ message: "Product is deleted successfully" });
   }
 );
@@ -94,6 +99,100 @@ router.put(
   }
 );
 
-// get all product list by buyerkjnmio
+// get all product list by buyer
+
+router.post(
+  "/product/buyer/list",
+  isBuyer,
+  validateReqBody(paginationSchema),
+  async (req, res) => {
+    //   const { page, limit } = req.query;
+    //   const skip = limit * (page - 1);
+    //   const products = await Product.find({ ownerId: req.loggedInUser._id })
+    //  .skip(skip)
+    //  .limit(limit);
+    //   return res.status(200).send({ products });
+
+    // extract pagination data from req.body
+    const { page, limit, searchText } = req.body;
+    // calculate skip
+    const skip = (page - 1) * limit;
+
+    // filter stage
+
+    let match = {};
+
+    if (searchText) {
+      match = { name: { $regex: searchText, $options: "i" } };
+    }
+
+    //create the query
+
+    let products = await Product.aggregate([
+      {
+        $match: match,
+      },
+      {
+        $skip: skip,
+      },
+      {
+        $limit: limit,
+      },
+      {
+        $project: {
+          name: 1,
+          price: 1,
+          brand: 1,
+          image: 1,
+        },
+      },
+    ]);
+    return res.status(200).send({ message: "success", products: products });
+  }
+);
+
+// get all product list by seller
+router.post(
+  "/product/seller/list",
+  isSeller,
+  validateReqBody(paginationSchema),
+  async (req, res) => {
+    // extract pagination data from req.body
+    const { page, limit, searchText } = req.body;
+
+    // calculate skip
+    const skip = (page - 1) * limit;
+
+    // filter stage
+    let match = { ownerId: req.loggedInUserId };
+
+    if (searchText) {
+      match = {
+        ownerId: req.loggedInUserId,
+        name: { $regex: searchText, $options: "i" },
+      };
+    }
+
+    let products = await Product.aggregate([
+      {
+        $match: match,
+      },
+      {
+        $skip: skip,
+      },
+      { $limit: limit },
+      {
+        $project: {
+          name: 1,
+          brand: 1,
+          price: 1,
+          image: 1,
+        },
+      },
+    ]);
+
+    return res.status(200).send({ message: "success", products: products });
+  }
+);
 
 export default router;
