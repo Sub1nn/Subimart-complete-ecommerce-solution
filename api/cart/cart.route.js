@@ -1,7 +1,12 @@
 import express from "express";
-
 import { isBuyer } from "../middleware/authentication.middleware.js";
-import Product from "./cart.model.js";
+import {
+  addProductToCartValidationSchema,
+  updateItemQuantitySchema,
+} from "./cart.validation.js";
+import Product from "../product/product.model.js";
+import Cart from "./cart.model.js";
+import mongoose from "mongoose";
 import { checkMongoIdValidity } from "../utils/check.mongo.id.validity.js";
 
 const router = express.Router();
@@ -86,9 +91,7 @@ router.put(
     // get update-data from req.body
     const updateData = req.body;
     try {
-      const validatedData = await addProductToCartValidationSchema.validate(
-        updateData
-      );
+      const validatedData = await updateItemQuantitySchema.validate(updateData);
       req.body = validatedData;
       next();
     } catch (error) {
@@ -117,7 +120,7 @@ router.put(
     // find cartItem using productId and buyerId
     const cartItem = await Cart.findOne({
       productId: updateData.productId,
-      buyerId: updateData.buyerId,
+      buyerId: req.loggedInUserId,
     });
     if (!cartItem) {
       return res
@@ -175,6 +178,16 @@ router.delete(
     // extract product Id from req.params
     const productId = req.params.id;
 
+    // check if product is already in the cart or not
+    const product = await Cart.findOne({ productId: productId });
+
+    // if not product, throw error
+    if (!product) {
+      return res
+        .status(404)
+        .send({ message: "Product does not exist inside cart." });
+    }
+
     // delete that product from cart
     await Cart.deleteOne({ productId: productId, buyerId: req.loggedInUserId });
 
@@ -194,6 +207,36 @@ router.delete("/cart/flush", isBuyer, async (req, res) => {
 
   // send response
   return res.status(200).send({ message: "Cart is flushed successfully." });
+});
+
+// list items from cart
+
+router.get("/cart/item/list", isBuyer, async (req, res) => {
+  const cartItems = await Cart.aggregate([
+    {
+      $match: {
+        buyerId: req.loggedInUserId,
+      },
+    },
+    {
+      $lookup: {
+        from: "products",
+        localField: "productId",
+        foreignField: "_id",
+        as: "productData",
+      },
+    },
+    {
+      $project: {
+        orderedQuantity: 1,
+        name: { $first: "$productData.name" },
+        brand: { $first: "$productData.brand" },
+        category: { $first: "$productData.category" },
+        price: { $first: "$productData.price" },
+      },
+    },
+  ]);
+  return res.status(200).send({ message: "success", cartData: cartItems });
 });
 
 export default router;
