@@ -19,8 +19,8 @@ export const userSchema = Yup.object({
   password: Yup.string()
     .required("Password is required")
     .min(8, "Password must be at least 8 characters"),
-  gender: Yup.string().oneOf(GenderOptions).trim(),
-  dob: Yup.date(),
+  gender: Yup.string().oneOf(GenderOptions).trim().nullable(),
+  dob: Yup.date().nullable(),
   role: Yup.string().oneOf(UserRoles).required("Role is required").trim(),
 });
 
