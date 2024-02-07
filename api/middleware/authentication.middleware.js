@@ -74,11 +74,11 @@ export const isSeller = async (req, res, next) => {
 
 // buyer role
 
-export const isBuyer = () => {
+export const isBuyer = async (req, res, next) => {
   // get the authorization from req.headers.authorization and split it and get the token from eg "bearer token"
   const authorization = req.headers.authorization;
   const splittedToken = authorization?.split(" ");
-  const token = splittedToken.lengths === 2 ? splittedToken[1] : null;
+  const token = splittedToken.length === 2 ? splittedToken[1] : null;
   // if not token throw error
   if (!token) {
     return res.status(401).send({ message: "Unauthorized token holder" });
@@ -91,7 +91,7 @@ export const isBuyer = () => {
     return res.status.send({ message: "Unauthorized" });
   }
   // find user
-  const user = User.findOne({ email: payload.email });
+  const user = await User.findOne({ email: payload.email });
   // if not user throw error
   if (!user) {
     return res.status(401).send({ message: "Unauthorized." });
