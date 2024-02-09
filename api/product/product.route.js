@@ -188,6 +188,7 @@ router.post(
           brand: 1,
           price: 1,
           image: 1,
+          description: { $substr: ["$description", 0, 200] },
         },
       },
     ]);
