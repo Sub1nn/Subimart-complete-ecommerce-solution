@@ -29,7 +29,7 @@ const CartCheckout = () => {
         <Typography>Grand total</Typography>
         <Typography>19000</Typography>
       </Stack>
-      <Button variant="contained" color="success">
+      <Button variant="contained" color="success" sx={{ mt: "1rem" }}>
         Proceed to checkout
       </Button>
     </Box>
