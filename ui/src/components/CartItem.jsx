@@ -21,14 +21,18 @@ import {
 } from "../store/slices/snackbar.slice";
 import Loader from "./Loader";
 
-const CartItem = ({ _id, name, brand, price, category, orderedQuantity }) => {
+const CartItem = ({
+  _id,
+  name,
+  brand,
+  price,
+  category,
+  orderedQuantity,
+  productId,
+}) => {
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
-  const {
-    isLoading,
-
-    mutate: deleteItem,
-  } = useMutation({
+  const { isLoading, mutate: deleteItem } = useMutation({
     mutationKey: ["delete-cart-item"],
     mutationFn: async () => {
       return await $axios.delete(`/cart/remove/${_id}`);
@@ -42,7 +46,25 @@ const CartItem = ({ _id, name, brand, price, category, orderedQuantity }) => {
     },
   });
 
-  if (isLoading) {
+  const { isLoading: isLoadingQuantity, mutate: updateCartItemQuantity } =
+    useMutation({
+      mutationKey: ["update-item-quantity"],
+      mutationFn: async (action) => {
+        return await $axios.put("/cart/item/update-quantity", {
+          productId: productId,
+          action: action,
+        });
+      },
+      onSuccess: (response) => {
+        dispatch(openSuccessSnackbar(response?.data?.message));
+        queryClient.invalidateQueries("cart-item-list");
+      },
+      onError: (error) => {
+        dispatch(openErrorSnackbar(error?.response?.data?.message));
+      },
+    });
+
+  if (isLoading || isLoadingQuantity) {
     return <Loader />;
   }
 
@@ -93,11 +115,19 @@ const CartItem = ({ _id, name, brand, price, category, orderedQuantity }) => {
               alignItems: "center",
             }}
           >
-            <IconButton>
+            <IconButton
+              onClick={() => {
+                updateCartItemQuantity("inc");
+              }}
+            >
               <AddIcon />
             </IconButton>
             <Typography variant="h6">{orderedQuantity}</Typography>
-            <IconButton>
+            <IconButton
+              onClick={() => {
+                updateCartItemQuantity("dec");
+              }}
+            >
               <RemoveIcon />
             </IconButton>
           </Stack>
