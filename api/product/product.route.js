@@ -11,6 +11,7 @@ import Product from "./product.model.js";
 import { checkMongoIdValidity } from "../utils/check.mongo.id.validity.js";
 import { checkProductOwnership } from "../middleware/check.product.ownership.js";
 import { paginationSchema } from "./product.validation.js";
+import Cart from "../cart/cart.model.js";
 
 const router = express.Router();
 
@@ -75,6 +76,8 @@ router.delete(
     const productId = req.params.id;
     // delete that one product
     await Product.deleteOne({ _id: productId });
+    // remove the product form cart
+    await Cart.deleteMany({ productId: productId });
     return res.status(200).send({ message: "Product is deleted successfully" });
   }
 );
@@ -177,6 +180,11 @@ router.post(
     let products = await Product.aggregate([
       {
         $match: match,
+      },
+      {
+        $sort: {
+          createdAt: -1,
+        },
       },
       {
         $skip: skip,
