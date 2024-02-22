@@ -223,6 +223,7 @@ router.get("/cart/item/list", isBuyer, async (req, res) => {
         brand: { $first: "$productData.brand" },
         category: { $first: "$productData.category" },
         price: { $first: "$productData.price" },
+        productId: 1,
       },
     },
   ]);
