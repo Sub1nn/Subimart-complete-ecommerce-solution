@@ -175,21 +175,11 @@ router.delete(
   isBuyer,
   checkMongoIdValidity,
   async (req, res) => {
-    // extract product Id from req.params
-    const productId = req.params.id;
-
-    // check if product is already in the cart or not
-    const product = await Cart.findOne({ productId: productId });
-
-    // if not product, throw error
-    if (!product) {
-      return res
-        .status(404)
-        .send({ message: "Product does not exist inside cart." });
-    }
+    // extract cart Id from req.params
+    const cartId = req.params.id;
 
     // delete that product from cart
-    await Cart.deleteOne({ productId: productId, buyerId: req.loggedInUserId });
+    await Cart.deleteOne({ _id: cartId, buyerId: req.loggedInUserId });
 
     // send response
 
