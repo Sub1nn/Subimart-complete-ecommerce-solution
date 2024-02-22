@@ -9,15 +9,36 @@ import {
   useTheme,
 } from "@mui/material";
 import CartCheckout from "../components/CartCheckout";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import $axios from "../../lib/axios.instance";
 import Loader from "../components/Loader";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import {
+  openErrorSnackbar,
+  openSuccessSnackbar,
+} from "../store/slices/snackbar.slice";
 
 const CartPage = () => {
   // const theme = useTheme();
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const queryClient = useQueryClient();
+
+  const { isLoading: flushLoading, mutate: flushCart } = useMutation({
+    mutationKey: ["flush-cart"],
+    mutationFn: async () => {
+      return await $axios.delete("/cart/flush");
+    },
+    onSuccess: (response) => {
+      dispatch(openSuccessSnackbar(response?.data?.message));
+      queryClient.invalidateQueries("cart-item-list");
+    },
+    onError: (error) => {
+      dispatch(openErrorSnackbar(error?.response?.data?.message));
+    },
+  });
 
   const { data, isLoading } = useQuery({
     queryKey: ["cart-item-list"],
@@ -28,7 +49,7 @@ const CartPage = () => {
 
   const cartData = data?.data?.cartData;
 
-  if (isLoading) {
+  if (isLoading || flushLoading) {
     return <Loader />;
   }
 
@@ -71,9 +92,16 @@ const CartPage = () => {
             m: isMobile ? "0" : "0 5rem 0 4rem",
           }}
         >
-          <Button variant="contained" color="success" sx={{ width: "50%" }}>
-            Clear Cart
-          </Button>
+          {cartData.length > 0 && (
+            <Button
+              variant="contained"
+              color="error"
+              sx={{ width: "40%" }}
+              onClick={flushCart}
+            >
+              Clear Cart
+            </Button>
+          )}
           {cartData.length > 0 ? (
             cartData.map((item) => {
               return <CartItem key={item._id} {...item} />;
