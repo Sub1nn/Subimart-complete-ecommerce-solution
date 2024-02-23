@@ -8,7 +8,7 @@ import {
 } from "../store/slices/snackbar.slice";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { useNavigate, useParams } from "react-router-dom";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import $axios from "../../lib/axios.instance";
 import Loader from "./Loader";
 
@@ -17,6 +17,7 @@ const ItemCounter = ({ availableQuantity }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [count, setCount] = useState(1);
+  const queryClient = useQueryClient();
 
   const {
     isLoading,
@@ -32,7 +33,8 @@ const ItemCounter = ({ availableQuantity }) => {
     },
     onSuccess: (response) => {
       dispatch(openSuccessSnackbar(response?.data?.message));
-      navigate("/cart");
+      // navigate("/cart");
+      queryClient.invalidateQueries("cart-item-count");
     },
     onError: (error) => {
       dispatch(openErrorSnackbar(error?.response?.data?.message));
