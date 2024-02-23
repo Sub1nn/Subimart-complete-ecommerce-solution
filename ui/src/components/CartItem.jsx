@@ -4,6 +4,7 @@ import {
   Chip,
   Grid,
   IconButton,
+  LinearProgress,
   Stack,
   Typography,
 } from "@mui/material";
@@ -40,6 +41,7 @@ const CartItem = ({
     onSuccess: (response) => {
       dispatch(openSuccessSnackbar(response?.data?.message));
       queryClient.invalidateQueries("cart-item-list");
+      queryClient.invalidateQueries("cart-item-count");
     },
     onError: (error) => {
       dispatch(openErrorSnackbar(error.response.data.message));
@@ -56,7 +58,7 @@ const CartItem = ({
         });
       },
       onSuccess: (response) => {
-        dispatch(openSuccessSnackbar(response?.data?.message));
+        // dispatch(openSuccessSnackbar(response?.data?.message));
         queryClient.invalidateQueries("cart-item-list");
       },
       onError: (error) => {
@@ -64,8 +66,8 @@ const CartItem = ({
       },
     });
 
-  if (isLoading || isLoadingQuantity) {
-    return <Loader />;
+  if (isLoadingQuantity || isLoading) {
+    return <LinearProgress color="secondary" />;
   }
 
   return (
@@ -133,13 +135,9 @@ const CartItem = ({
           </Stack>
         </Grid>
         <Grid item>
-          <Button
-            color="error"
-            endIcon={<CancelRoundedIcon />}
-            onClick={deleteItem}
-          >
-            Remove Item
-          </Button>
+          <IconButton color="error" onClick={deleteItem}>
+            <CancelRoundedIcon />
+          </IconButton>
         </Grid>
       </Grid>
     </Box>
