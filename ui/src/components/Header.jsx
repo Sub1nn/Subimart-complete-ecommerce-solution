@@ -17,6 +17,8 @@ import { useNavigate } from "react-router-dom";
 import LogoutDialog from "./LogoutDialog";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { Badge } from "@mui/material";
+import { useQuery } from "react-query";
+import $axios from "../../lib/axios.instance";
 
 const drawerWidth = 240;
 const navItems = [
@@ -41,6 +43,15 @@ const Header = (props) => {
   const navigate = useNavigate();
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["cart-item-count"],
+    queryFn: async () => {
+      return await $axios.get("/cart/item/count");
+    },
+  });
+
+  const cartItemCount = data?.data?.cartItemCount;
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -116,7 +127,11 @@ const Header = (props) => {
                 navigate("/cart");
               }}
             >
-              <Badge badgeContent={4} color="primary">
+              <Badge
+                badgeContent={cartItemCount || null}
+                color="primary"
+                sx={{ cursor: "pointer" }}
+              >
                 <ShoppingCartOutlinedIcon sx={{ color: "white" }} />
               </Badge>
             </IconButton>
