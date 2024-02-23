@@ -227,7 +227,32 @@ router.get("/cart/item/list", isBuyer, async (req, res) => {
       },
     },
   ]);
-  return res.status(200).send({ message: "success", cartData: cartItems });
+
+  let subTotal = 0;
+
+  cartItems.forEach((item) => {
+    subTotal += item.price * item.orderedQuantity;
+  });
+
+  const discount = (5 / 100) * subTotal;
+
+  const grandTotal = subTotal - discount;
+
+  return res
+    .status(200)
+    .send({
+      message: "success",
+      cartData: cartItems,
+      orderSummary: { subTotal, grandTotal, discount },
+    });
+});
+
+// cart items count
+
+router.get("/cart/item/count", isBuyer, async (req, res) => {
+  const buyerId = req.loggedInUserId;
+  const cartCount = await Cart.find({ buyerId: buyerId }).count();
+  return res.status(200).send({ message: "success", cartItemCount: cartCount });
 });
 
 export default router;
