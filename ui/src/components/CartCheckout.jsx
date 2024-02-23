@@ -1,7 +1,7 @@
 import { Box, Button, Stack, Typography, useMediaQuery } from "@mui/material";
 import React from "react";
 
-const CartCheckout = () => {
+const CartCheckout = ({ subTotal, discount, grandTotal }) => {
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   return (
     <Box
@@ -19,15 +19,15 @@ const CartCheckout = () => {
       <Typography variant="h5">Order Summary</Typography>
       <Stack direction={"row"} sx={{ justifyContent: "space-between" }}>
         <Typography>Sub total</Typography>
-        <Typography>20000</Typography>
+        <Typography>$ {subTotal}</Typography>
       </Stack>
       <Stack direction={"row"} justifyContent={"space-between"}>
         <Typography>Discount</Typography>
-        <Typography>1000</Typography>
+        <Typography>$ {discount}</Typography>
       </Stack>
       <Stack direction={"row"} justifyContent={"space-between"}>
         <Typography>Grand total</Typography>
-        <Typography>19000</Typography>
+        <Typography>$ {grandTotal}</Typography>
       </Stack>
       <Button variant="contained" color="success" sx={{ mt: "1rem" }}>
         Proceed to checkout
