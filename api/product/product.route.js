@@ -151,7 +151,16 @@ router.post(
         },
       },
     ]);
-    return res.status(200).send({ message: "success", products: products });
+
+    // calculate number of page
+    const totalProduct = await Product.find(match).countDocuments();
+    const numberOfPages = Math.ceil(totalProduct / limit);
+
+    return res.status(200).send({
+      message: "success",
+      products: products,
+      numberOfPages: numberOfPages,
+    });
   }
 );
 
@@ -201,7 +210,15 @@ router.post(
       },
     ]);
 
-    return res.status(200).send({ message: "success", products: products });
+    // calculate number of page
+    const totalProduct = await Product.find(match).countDocuments();
+    const numberOfPages = Math.ceil(totalProduct / limit);
+
+    return res.status(200).send({
+      message: "success",
+      products: products,
+      numberOfPages: numberOfPages,
+    });
   }
 );
 
