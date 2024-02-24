@@ -30,6 +30,7 @@ const CartItem = ({
   category,
   orderedQuantity,
   productId,
+  image,
 }) => {
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
@@ -91,9 +92,9 @@ const CartItem = ({
       >
         <Grid item>
           <img
-            src="https://cdn.thewirecutter.com/wp-content/media/2023/09/lcdledtv-2048px-tclQM8-2109-2x1-1.jpg?auto=webp&quality=75&crop=2:1&width=1024"
-            alt=""
-            style={{ height: "70px", width: "100px" }}
+            src={image || "https://bitsofco.de/img/Qo5mfYDE5v-350.png"}
+            alt={name}
+            style={{ height: "80px", width: "100px", objectFit: "contain" }}
           />
         </Grid>
         <Grid item>
