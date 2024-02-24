@@ -22,12 +22,16 @@ const ProductCard = ({ name, brand, price, image, description, _id }) => {
       }}
     >
       <img
+        onClick={() => {
+          navigate(`/product/detail/${_id}`);
+        }}
         style={{
           objectFit: "contain",
           padding: "1rem 0",
           width: "100%",
           height: "300px",
           maxWidth: "400px",
+          cursor: "pointer",
           // maxHeight: "300px",
         }}
         src={image}
