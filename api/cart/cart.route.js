@@ -223,6 +223,7 @@ router.get("/cart/item/list", isBuyer, async (req, res) => {
         brand: { $first: "$productData.brand" },
         category: { $first: "$productData.category" },
         price: { $first: "$productData.price" },
+        image: { $first: "$productData.image" },
         productId: 1,
       },
     },
@@ -238,13 +239,11 @@ router.get("/cart/item/list", isBuyer, async (req, res) => {
 
   const grandTotal = subTotal - discount;
 
-  return res
-    .status(200)
-    .send({
-      message: "success",
-      cartData: cartItems,
-      orderSummary: { subTotal, grandTotal, discount },
-    });
+  return res.status(200).send({
+    message: "success",
+    cartData: cartItems,
+    orderSummary: { subTotal, grandTotal, discount },
+  });
 });
 
 // cart items count
