@@ -60,12 +60,18 @@ const Header = (props) => {
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
       <Typography variant="h6" sx={{ my: 2 }}>
-        MUI
+        Subi Mart
       </Typography>
       <Divider />
       <List>
         {navItems.map((item) => (
-          <ListItem key={item.id} disablePadding>
+          <ListItem
+            key={item.id}
+            disablePadding
+            onClick={() => {
+              navigate(item.path);
+            }}
+          >
             <ListItemButton sx={{ textAlign: "center" }}>
               <ListItemText primary={item.name} />
             </ListItemButton>

@@ -1,3 +1,4 @@
+// ... (import statements)
 import React from "react";
 import CartItem from "../components/CartItem";
 import {
@@ -21,7 +22,6 @@ import {
 import ContinueShopping from "../components/ContinueShopping";
 
 const CartPage = () => {
-  // const theme = useTheme();
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -58,20 +58,13 @@ const CartPage = () => {
   if (cartData?.length === 0) {
     return <ContinueShopping />;
   }
-  return (
-    <Box
-      sx={{
-        mt: "4rem",
 
-        // textAlign: "center",
-      }}
-    >
+  return (
+    <>
       <Typography
         variant="h4"
         sx={{
           background: "linear-gradient(to right bottom, #ea0b0b, #370ed8)",
-          pt: "2rem",
-          ml: "4rem",
           WebkitBackgroundClip: "text",
           color: "transparent",
         }}
@@ -82,19 +75,15 @@ const CartPage = () => {
         sx={{
           display: "flex",
           flexDirection: isMobile ? "column" : "row",
-          justifyContent: "space-between",
-          // alignItems: "center",
           mt: "2rem",
-          pl: isMobile ? "1rem" : "0",
-
-          borderRadius: "20px",
+          px: isMobile ? "1rem" : "2rem",
         }}
       >
         <Stack
           sx={{
             gap: "2rem",
             width: isMobile ? "100%" : "50%",
-            m: isMobile ? "0" : "0 5rem 0 4rem",
+            m: isMobile ? "0" : "0 5rem 0 0rem",
           }}
         >
           {cartData.length > 0 && (
@@ -125,7 +114,7 @@ const CartPage = () => {
           />
         </Stack>
       </Box>
-    </Box>
+    </>
   );
 };
 

@@ -135,16 +135,10 @@ const EditProduct = () => {
             return (
               <form
                 style={{
-                  marginTop: "6rem",
                   display: "flex",
                   flexDirection: "column",
-                  width: isMobile
-                    ? "90%"
-                    : isMedium
-                    ? "80%"
-                    : isLarge
-                    ? "70%"
-                    : "40%",
+
+                  width: isMobile ? "400px" : "600px",
                   padding: "2rem",
                   gap: "2rem",
                   boxShadow:

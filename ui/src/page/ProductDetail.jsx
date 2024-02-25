@@ -44,7 +44,7 @@ const ProductDetail = () => {
           ? "row"
           : "row",
         margin: "auto",
-        mt: isMobile ? "4rem" : isMedium ? "8rem" : isLarge ? "10rem" : "10rem",
+
         p: isMobile ? "2rem" : isMedium ? "1.5rem" : isLarge ? "2rem" : "2rem", //
         // gap: "1rem",
         width: isExtraLarge ? "60%" : "88%",

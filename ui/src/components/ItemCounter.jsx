@@ -41,10 +41,6 @@ const ItemCounter = ({ availableQuantity }) => {
     },
   });
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
   return (
     <>
       <Stack
