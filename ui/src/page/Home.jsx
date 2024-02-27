@@ -1,67 +1,55 @@
-import React, { useEffect, useState } from "react";
-import { Carousel } from "react-responsive-carousel"; //its a component that helps to slide images in our hero/home section
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // css for react carousel component
-import { Link } from "react-router-dom";
+import React from "react";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Link, useParams } from "react-router-dom";
 import "./home.css";
+import { useQuery } from "react-query";
+import $axios from "../../lib/axios.instance";
+import Loader from "../components/Loader";
 
-export const Home = () => {
-  const [product, setProduct] = useState([]);
+const Home = () => {
+  const { id } = useParams();
+  const { isLoading, data } = useQuery({
+    queryKey: ["product-carousel"],
+    queryFn: async () => {
+      return await $axios.get("/product/carousel/list");
+    },
+  });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          "https://localhost:3000/product/buyer/list"
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch popular movies");
-        }
-        const data = await response.json();
-        console.log(data);
-        setProduct(data.results);
-      } catch (error) {
-        console.error("Failed to fetch popular movies", error);
-      }
-    };
-    fetchData();
-  }, []);
+  const productData = data?.data?.products;
+  console.log(productData);
+
+  if (isLoading) {
+    return <Loader />;
+  }
   return (
     <>
       <div className="poster">
         <Carousel
           showThumbs={false}
           autoPlay={true}
-          transitionTime={3}
+          transitionTime={1}
           infiniteLoop={true}
           showStatus={false}
         >
-          {product.map((item) => (
+          {productData.map((product) => (
             <Link
               style={{ textDecoration: "none", color: "white" }}
-              to={`/product/details/${item.id}`}
-              key={item.id}
+              to={`/product/details/${product.id}`}
+              key={product.id}
             >
               <div className="posterImage">
-                <img
-                  src={
-                    "https://media.istockphoto.com/id/524085051/photo/beautiful-exterior-of-new-luxury-home-at-twilight.jpg?s=612x612&w=0&k=20&c=wPqEpJkL22wE3NHSCgdWXq2FC8a-KvSCpP7XRIZHuOU="
-                  }
-                  alt={item.name}
-                />
+                <img src={product.image} alt={product.name} />
               </div>
               <div className="posterImage__overlay">
                 <div className="posterImage__title">
-                  {item ? item.name : ""}
+                  {product ? product.name : ""}
                 </div>
-                <div className="posterImage__runtime">
-                  {item ? item.brand : ""}
-                  <span className="posterImage__rating">
-                    {item ? item.category : ""}
-                    <i className="fas fa-star" />{" "}
-                  </span>
+                <div className="posterImage__brand">
+                  {product ? product.brand : ""}
                 </div>
                 <div className="posterImage__description">
-                  {item ? item.description : ""}
+                  {product ? product.description : ""}
                 </div>
               </div>
             </Link>
