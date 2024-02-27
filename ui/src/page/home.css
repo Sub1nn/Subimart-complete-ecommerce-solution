@@ -6,6 +6,7 @@
   margin: auto;
   display: block;
   width: 100%;
+  object-fit: cover;
 }
 
 .posterImage__overlay {
@@ -34,13 +35,9 @@
   text-align: left;
 }
 
-.posterImage__runtime {
+.posterImage__brand {
   font-size: 2rem;
   margin-bottom: 1rem;
-}
-
-.posterImage__rating {
-  margin-left: 3rem;
 }
 
 .posterImage__description {
