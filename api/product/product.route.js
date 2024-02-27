@@ -222,4 +222,23 @@ router.post(
   }
 );
 
+// get all products for carousel
+
+router.get("/product/carousel/list", async (req, res) => {
+  const products = await Product.find();
+
+  const carouselProducts = products.map((product) => ({
+    name: product.name,
+    price: product.price,
+    brand: product.brand,
+    image: product.image,
+    description: product.description.substring(0, 200),
+  }));
+
+  return res.status(200).send({
+    message: "success",
+    products: carouselProducts,
+  });
+});
+
 export default router;
