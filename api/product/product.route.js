@@ -117,7 +117,7 @@ router.post(
     //   return res.status(200).send({ products });
 
     // extract pagination data from req.body
-    const { page, limit, searchText } = req.body;
+    const { page, limit, searchText, category } = req.body;
     // calculate skip
     const skip = (page - 1) * limit;
 
@@ -127,6 +127,10 @@ router.post(
 
     if (searchText) {
       match = { name: { $regex: searchText, $options: "i" } };
+    }
+
+    if (category) {
+      match = { ...match, category: category };
     }
 
     //create the query
