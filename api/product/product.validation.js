@@ -25,4 +25,5 @@ export let paginationSchema = Yup.object({
   page: Yup.number().default(1).min(1),
   limit: Yup.number().default(10).min(1),
   searchText: Yup.string().nullable().trim().default(null),
+  category: Yup.string().oneOf(productCategories).default(null).nullable(),
 });
