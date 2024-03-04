@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { useMutation } from "react-query";
 import { Formik } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import * as Yup from "yup";
 import $axios from "../../lib/axios.instance";
 import { useNavigate } from "react-router-dom";
@@ -56,6 +56,10 @@ const currencies = [
 ];
 
 const AddProduct = () => {
+  const [productImage, setProductImage] = useState(null);
+  const [localUrl, setLocalUrl] = useState(null);
+
+  console.log(localUrl);
   const [category, setCategory] = React.useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -150,6 +154,21 @@ const AddProduct = () => {
               onSubmit={handleSubmit}
             >
               <Typography variant="h4">Add Product</Typography>
+
+              {productImage && (
+                <img src={localUrl} alt="" style={{ width: "200px" }} />
+              )}
+
+              <FormControl>
+                <input
+                  type="file"
+                  onChange={(event) => {
+                    const file = event?.target?.files[0];
+                    setProductImage(file);
+                    setLocalUrl(URL.createObjectURL(file));
+                  }}
+                />
+              </FormControl>
 
               <FormControl>
                 <TextField
