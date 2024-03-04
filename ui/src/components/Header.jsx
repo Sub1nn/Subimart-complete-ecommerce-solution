@@ -40,15 +40,18 @@ const navItems = [
 ];
 
 const Header = (props) => {
+  const userRole = localStorage.getItem("role");
   const navigate = useNavigate();
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
+  // get cart count
   const { data, isLoading } = useQuery({
     queryKey: ["cart-item-count"],
     queryFn: async () => {
       return await $axios.get("/cart/item/count");
     },
+    enabled: userRole === "buyer",
   });
 
   const cartItemCount = data?.data?.cartItemCount;
@@ -127,20 +130,22 @@ const Header = (props) => {
               marginLeft: "3rem",
             }}
           >
-            <IconButton
-              size="large"
-              onClick={() => {
-                navigate("/cart");
-              }}
-            >
-              <Badge
-                badgeContent={cartItemCount || null}
-                color="primary"
-                sx={{ cursor: "pointer" }}
+            {userRole === "buyer" && (
+              <IconButton
+                size="large"
+                onClick={() => {
+                  navigate("/cart");
+                }}
               >
-                <ShoppingCartOutlinedIcon sx={{ color: "white" }} />
-              </Badge>
-            </IconButton>
+                <Badge
+                  badgeContent={cartItemCount || null}
+                  color="primary"
+                  sx={{ cursor: "pointer" }}
+                >
+                  <ShoppingCartOutlinedIcon sx={{ color: "white" }} />
+                </Badge>
+              </IconButton>
+            )}
             <LogoutDialog />
           </Box>
         </Toolbar>
