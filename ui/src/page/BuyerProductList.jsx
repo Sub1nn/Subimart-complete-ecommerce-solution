@@ -14,42 +14,38 @@ import {
 } from "@mui/material";
 import Loader from "../components/Loader";
 import AccountCircle from "@mui/icons-material/AccountCircle";
+import { useSelector } from "react-redux";
+import NoProductFound from "../components/NoProductFound";
 
 const BuyerProductList = () => {
   const [page, setPage] = useState(1);
-  const [searchText, setSearchText] = useState("");
+
+  const { searchText, category } = useSelector((state) => state.product);
+
   const { isLoading, isError, data, error } = useQuery({
-    queryKey: ["buyer-product-list", page, searchText],
+    queryKey: ["buyer-product-list", page, searchText, category],
     queryFn: async () => {
       return await $axios.post("/product/buyer/list", {
         page: page,
         limit: 4,
         searchText: searchText,
+        category: category || null,
       });
     },
   });
-
+  // console.log(data);
   const productData = data?.data?.products;
   const totalPages = data?.data?.numberOfPages;
+  // console.log(productData);
 
   if (isLoading) {
     return <Loader />;
   }
-
+  if (productData.length === 0) {
+    return <NoProductFound />;
+  }
   return (
     <>
-      <Box
-        sx={{ display: "grid", placeContent: "flex-end", m: "0 3rem 2rem 0" }}
-      >
-        <TextField
-          value={searchText}
-          label="Search"
-          variant="standard"
-          onChange={(event) => {
-            setSearchText(event?.target?.value || " ");
-          }}
-        />
-      </Box>
       <Grid container spacing={4} justifyContent="center">
         {productData.map((item) => {
           return (
