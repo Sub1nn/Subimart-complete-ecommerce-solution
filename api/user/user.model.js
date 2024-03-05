@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { GenderOptions, UserRoles } from "../constants/general.constant.js";
+import crypto from "crypto";
 
 const userSchema = new mongoose.Schema(
   {
@@ -45,8 +46,28 @@ const userSchema = new mongoose.Schema(
       enum: UserRoles,
       default: "buyer",
     },
+    // confirmPassword: {
+    //   type: String,
+    //   required: [true, "please confirm your password"],
+    //   trim: true,
+    // },
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetTokenExpires: Date,
   },
   { timestamps: true }
 );
+
+// Method to generate a password reset token
+userSchema.methods.generatePasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(64).toString("hex");
+
+  this.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+  this.passwordResetTokenExpires = Date.now() + 10 * 60 * 1000; // Token valid for 10 minutes
+  return resetToken;
+};
 
 export const User = mongoose.model("User", userSchema);
