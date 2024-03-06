@@ -11,6 +11,7 @@ import bcrypt from "bcrypt";
 const router = express.Router();
 
 // register user
+// router.route('/user/register').post(validateReqBody(userSchema), registerUser);
 
 router.post(
   "/user/register",
@@ -31,7 +32,6 @@ router.post(
 // change user password
 
 router.post("/forgot-password", async (req, res) => {
-  // Changed from router.patch to router.post
   const { email } = req.body;
 
   const user = await User.findOne({ email });
@@ -40,7 +40,7 @@ router.post("/forgot-password", async (req, res) => {
     return res.status(404).json({ message: "User not found" });
   }
 
-  // Generate a password reset token
+  // Generate password reset token
   const resetToken = user.generatePasswordResetToken();
 
   await user.save({ validateBeforeSave: false });
