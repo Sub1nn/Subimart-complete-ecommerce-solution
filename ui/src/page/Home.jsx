@@ -6,6 +6,8 @@ import "./home.css";
 import { useQuery } from "react-query";
 import $axios from "../../lib/axios.instance";
 import Loader from "../components/Loader";
+import { Grid, Stack, Typography } from "@mui/material";
+import ProductCard from "../components/ProductCard";
 
 const Home = () => {
   const { id } = useParams();
@@ -22,6 +24,9 @@ const Home = () => {
   if (isLoading) {
     return <Loader />;
   }
+
+  // Limiting popular products to 6 items
+  const popularProducts = productData.slice(0, 6);
   return (
     <>
       <div className="poster">
@@ -56,6 +61,26 @@ const Home = () => {
           ))}
         </Carousel>
       </div>
+      <div
+        style={{
+          marginTop: "3rem",
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
+        <Typography variant="h3" sx={{ fontWeight: "bold", textAlign: "left" }}>
+          Popular Products
+        </Typography>
+      </div>
+      <Grid container spacing={4} justifyContent="center" mt={"1px"}>
+        {popularProducts.map((item) => {
+          return (
+            <Grid key={item._id} item xs={12} sm={6} md={4} lg={3}>
+              <ProductCard {...item} />
+            </Grid>
+          );
+        })}
+      </Grid>
     </>
   );
 };
