@@ -122,4 +122,40 @@ router.patch("/reset-password/:token", async (req, res) => {
   });
 });
 
+// Email verification route
+
+router.get("/verify-email", async (req, res) => {
+  const { email } = req.query;
+
+  if (!email) {
+    return res.status(400).json({ message: "Email parameter is missing" });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if user is already verified
+    if (user.verified) {
+      return res
+        .status(200)
+        .json({ message: "Email already verified", redirect: "/login" });
+    }
+
+    // Update user's email verification status
+    user.verified = true;
+    await user.save();
+
+    return res
+      .status(200)
+      .json({ message: "Email verified successfully", redirect: "/login" });
+  } catch (error) {
+    console.error("Error verifying email:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 export default router;
