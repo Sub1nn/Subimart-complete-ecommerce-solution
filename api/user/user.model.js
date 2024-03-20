@@ -46,11 +46,10 @@ const userSchema = new mongoose.Schema(
       enum: UserRoles,
       default: "buyer",
     },
-    // confirmPassword: {
-    //   type: String,
-    //   required: [true, "please confirm your password"],
-    //   trim: true,
-    // },
+    verified: {
+      type: Boolean,
+      default: false,
+    },
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetTokenExpires: Date,
