@@ -1,8 +1,38 @@
 import { Box, Button, Stack, Typography, useMediaQuery } from "@mui/material";
 import React from "react";
+import { useMutation } from "react-query";
+import $axios from "../../lib/axios.instance";
+import Loader from "./Loader";
 
-const CartCheckout = ({ subTotal, discount, grandTotal }) => {
+const CartCheckout = ({ subTotal, discount, grandTotal, orderProductList }) => {
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+
+  const { isLoading, mutate: orderCheckout } = useMutation({
+    mutationKey: ["initiate-payment"],
+    mutationFn: async () => {
+      return await $axios.post("/order/payment/create", {
+        amount: +grandTotal,
+        orderItems: orderProductList,
+      });
+    },
+    onSuccess: (res) => {
+      console.log(res);
+      const paymentUrl = res?.data?.orderInfo?.payment_url;
+      if (paymentUrl) {
+        window.location.href = paymentUrl;
+      } else {
+        console.error("Payment URL not found in response");
+      }
+    },
+    onError: (error) => {
+      console.log(error?.response?.data?.message);
+    },
+  });
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
     <Box
       sx={{
@@ -29,7 +59,14 @@ const CartCheckout = ({ subTotal, discount, grandTotal }) => {
         <Typography>Grand total</Typography>
         <Typography>$ {grandTotal}</Typography>
       </Stack>
-      <Button variant="contained" color="success" sx={{ mt: "1rem" }}>
+      <Button
+        variant="contained"
+        color="success"
+        sx={{ mt: "1rem" }}
+        onClick={() => {
+          orderCheckout();
+        }}
+      >
         Proceed to checkout
       </Button>
     </Box>
