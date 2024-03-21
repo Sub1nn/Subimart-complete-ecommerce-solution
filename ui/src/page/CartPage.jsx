@@ -1,5 +1,5 @@
 // ... (import statements)
-import React from "react";
+import React, { useState } from "react";
 import CartItem from "../components/CartItem";
 import {
   Box,
@@ -26,6 +26,7 @@ const CartPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
+  const [orderProductList, setOrderProductList] = useState([]);
 
   const { isLoading: flushLoading, mutate: flushCart } = useMutation({
     mutationKey: ["flush-cart"],
@@ -43,9 +44,20 @@ const CartPage = () => {
   });
 
   const { data, isLoading } = useQuery({
-    queryKey: ["cart-item-list"],
+    queryKey: ["cart-list"],
     queryFn: async () => {
       return await $axios.get("/cart/item/list");
+    },
+    onSuccess: (res) => {
+      const requiredData = res?.data?.cartData.map((item) => {
+        return {
+          productId: item.productId,
+
+          orderedQuantity: item.orderedQuantity,
+        };
+      });
+      console.log({ requiredData: requiredData });
+      setOrderProductList(requiredData);
     },
   });
 
@@ -108,6 +120,7 @@ const CartPage = () => {
           }}
         >
           <CartCheckout
+            orderProductList={orderProductList}
             subTotal={orderSummary?.subTotal}
             discount={orderSummary?.discount}
             grandTotal={orderSummary?.grandTotal}
