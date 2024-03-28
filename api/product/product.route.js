@@ -1,6 +1,6 @@
 import express from "express";
 import { validateReqBody } from "../middleware/validation.middleware.js";
-import { productSchema } from "./product.validation.js";
+import { buyerPaginationSchema, productSchema } from "./product.validation.js";
 import {
   isBuyer,
   isSeller,
@@ -107,8 +107,9 @@ router.put(
 router.post(
   "/product/buyer/list",
   isBuyer,
-  validateReqBody(paginationSchema),
+  validateReqBody(buyerPaginationSchema),
   async (req, res) => {
+    console.log(req.body);
     //   const { page, limit } = req.query;
     //   const skip = limit * (page - 1);
     //   const products = await Product.find({ ownerId: req.loggedInUser._id })
@@ -117,7 +118,7 @@ router.post(
     //   return res.status(200).send({ products });
 
     // extract pagination data from req.body
-    const { page, limit, searchText, category } = req.body;
+    const { page, limit, searchText, category, minPrice, maxPrice } = req.body;
     // calculate skip
     const skip = (page - 1) * limit;
 
@@ -131,6 +132,16 @@ router.post(
 
     if (category) {
       match = { ...match, category: category };
+    }
+
+    if (minPrice || maxPrice) {
+      match = {
+        ...match,
+        price: {
+          ...(minPrice ? { $gte: minPrice } : {}),
+          ...(maxPrice ? { $lte: maxPrice } : {}),
+        },
+      };
     }
 
     //create the query
