@@ -56,7 +56,7 @@ const CartPage = () => {
           orderedQuantity: item.orderedQuantity,
         };
       });
-      console.log({ requiredData: requiredData });
+      // console.log({ requiredData: requiredData });
       setOrderProductList(requiredData);
     },
   });
