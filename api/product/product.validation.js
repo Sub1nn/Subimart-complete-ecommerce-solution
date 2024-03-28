@@ -27,3 +27,24 @@ export let paginationSchema = Yup.object({
   searchText: Yup.string().nullable().trim().default(null),
   category: Yup.string().oneOf(productCategories).default(null).nullable(),
 });
+export let buyerPaginationSchema = Yup.object({
+  page: Yup.number().default(1).min(1),
+  limit: Yup.number().default(10).min(1),
+  searchText: Yup.string().nullable().trim().default(null),
+  category: Yup.string().oneOf(productCategories).default(null).nullable(),
+  minPrice: Yup.number()
+    .min(0, "Price cannot be negative")
+    .default(0)
+    .nullable(),
+  maxPrice: Yup.number()
+    .min(0, "Price cannot be negative")
+    .test({
+      name: "maxPrice",
+      message: "Max price must be greater than min price.",
+      test: function (value) {
+        return value >= this.parent.minPrice;
+      },
+    })
+    .default(0)
+    .nullable(),
+});
