@@ -20,6 +20,8 @@ import { useNavigate } from "react-router-dom";
 import $axios from "../../lib/axios.instance";
 import LogoutDialog from "./LogoutDialog";
 import ThemeToggle from "./ThemeToggle";
+import { useDispatch } from "react-redux";
+import { clearFilter } from "../store/slices/productSlice";
 
 const drawerWidth = 240;
 const navItems = [
@@ -48,6 +50,7 @@ const darkTheme = createTheme({
 });
 
 const Header = (props) => {
+  const dispatch = useDispatch();
   const [theme, setTheme] = React.useState("light");
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
@@ -129,6 +132,7 @@ const Header = (props) => {
                   sx={{ color: "#fff" }}
                   onClick={() => {
                     navigate(item.path);
+                    dispatch(clearFilter());
                   }}
                 >
                   {item.name}
