@@ -20,7 +20,8 @@ import NoProductFound from "../components/NoProductFound";
 const BuyerProductList = () => {
   const [page, setPage] = useState(1);
 
-  const { searchText, category } = useSelector((state) => state.product);
+  const { searchText, category, minPrice, maxPrice, isFilterApplied } =
+    useSelector((state) => state.product);
 
   const { isLoading, isError, data, error } = useQuery({
     queryKey: ["buyer-product-list", page, searchText, category],
@@ -30,6 +31,9 @@ const BuyerProductList = () => {
         limit: 3,
         searchText: searchText,
         category: category || null,
+        minPrice: minPrice || null,
+        maxPrice: maxPrice || null,
+        isFilterApplied: isFilterApplied,
       });
     },
   });
@@ -56,6 +60,7 @@ const BuyerProductList = () => {
         })}
       </Grid>
       <Pagination
+        sx={{ display: "flex", justifyContent: "center", margin: "2rem 0" }}
         page={page}
         count={totalPages}
         color="secondary"
