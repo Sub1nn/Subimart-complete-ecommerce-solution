@@ -3,10 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 export const ProductSlice = createSlice({
   name: "counter",
   initialState: {
-    searchText: "",
-    category: "",
+    searchText: null,
+    category: null,
     minPrice: 0,
     maxPrice: 0,
+    isFilterApplied: false,
   },
   reducers: {
     setSearchText: (state, action) => {
@@ -14,16 +15,22 @@ export const ProductSlice = createSlice({
     },
     setCategory: (state, action) => {
       state.category = action.payload;
+      state.isFilterApplied = true;
     },
     clearFilter: (state, action) => {
-      state.searchText = "";
-      state.category = "";
+      state.searchText = null;
+      state.category = null;
+      state.minPrice = 0;
+      state.maxPrice = 0;
+      state.isFilterApplied = false;
     },
     setMinPrice: (state, action) => {
       state.minPrice = +action.payload;
+      state.isFilterApplied = true;
     },
     setMaxPrice: (state, action) => {
       state.maxPrice = +action.payload;
+      state.isFilterApplied = true;
     },
   },
 });
