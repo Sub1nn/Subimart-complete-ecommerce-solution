@@ -89,7 +89,7 @@ const ProductFilter = () => {
                   },
                 }),
             })}
-            onSubmit={(values) => {
+            onSubmit={(values, { resetForm }) => {
               if (values.minPrice) {
                 dispatch(setMaxPrice(values?.minPrice));
               }
@@ -100,6 +100,7 @@ const ProductFilter = () => {
                 dispatch(setCategory(values?.category));
               }
               handleClose();
+              resetForm();
             }}
           >
             {({ handleSubmit, getFieldProps, touched, errors }) => (
