@@ -1,12 +1,17 @@
-import MinimumLayout from "../layout/MinimumLayout";
-import Login from "../page/Login";
-import Register from "../page/Register";
-import Practice from "../page/practice";
+import GuestGuard from "../guards/GuestGuard"
+import MinimumLayout from "../layout/MinimumLayout"
+import Login from "../page/Login"
+import Register from "../page/Register"
+import Practice from "../page/practice"
 
 const guestRoutes = [
   {
     path: "/",
-    element: <MinimumLayout />,
+    element: (
+      <GuestGuard>
+        <MinimumLayout />
+      </GuestGuard>
+    ),
     children: [
       {
         path: "login",
@@ -22,6 +27,6 @@ const guestRoutes = [
       },
     ],
   },
-];
+]
 
-export default guestRoutes;
+export default guestRoutes

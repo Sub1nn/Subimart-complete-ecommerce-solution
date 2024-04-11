@@ -1,16 +1,21 @@
-import MainLayout from "../layout/MainLayout";
-import About from "../page/About";
-import AddProduct from "../page/AddProduct";
-import CartPage from "../page/CartPage";
-import EditProduct from "../page/EditProduct";
-import Home from "../page/Home";
-import ProductDetail from "../page/ProductDetail";
-import ProductList from "../page/ProductList";
+import AuthGuard from "../guards/AuthGuard"
+import MainLayout from "../layout/MainLayout"
+import About from "../page/About"
+import AddProduct from "../page/AddProduct"
+import CartPage from "../page/CartPage"
+import EditProduct from "../page/EditProduct"
+import Home from "../page/Home"
+import ProductDetail from "../page/ProductDetail"
+import ProductList from "../page/ProductList"
 
 const mainRoutes = [
   {
     path: "/",
-    element: <MainLayout />,
+    element: (
+      <AuthGuard>
+        <MainLayout />
+      </AuthGuard>
+    ),
     children: [
       {
         path: "",
@@ -42,6 +47,6 @@ const mainRoutes = [
       },
     ],
   },
-];
+]
 
-export default mainRoutes;
+export default mainRoutes
