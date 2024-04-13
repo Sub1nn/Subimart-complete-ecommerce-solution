@@ -1,4 +1,4 @@
-export const useLoggedInUser = () => {
+const useLoggedInUser = () => {
   const token = localStorage.getItem("token")
 
   if (token) {
