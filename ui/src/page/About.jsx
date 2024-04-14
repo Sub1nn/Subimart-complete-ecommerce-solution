@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   Container,
   Typography,
@@ -6,14 +6,18 @@ import {
   Box,
   Card,
   CardContent,
-} from "@mui/material";
-import nepmartImage from "../assets/nepmart2.png"; // Import your image file
+} from "@mui/material"
+import nepmartImage from "../assets/nepmart2.png" // Import your image file
 
 const About = () => {
   return (
     <Box
       sx={{
         bgcolor: "background.paper",
+        width: {
+          xs: "100%",
+          lg: "70%",
+        },
 
         marginTop: "0.5rem",
         marginBottom: "2rem",
@@ -40,7 +44,14 @@ const About = () => {
         <img
           src={nepmartImage}
           alt="Nepmart"
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            borderRadius: "8px",
+            boxShadow:
+              " rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px",
+          }}
         />
       </Box>
 
@@ -132,7 +143,7 @@ const About = () => {
           color="text.secondary"
           paragraph
         >
-          If you have any questions, feedback, or inquiries, please don't
+          If you have any questions, feedback, or inquiries, please do not
           hesitate to contact us:
         </Typography>
         <Grid container spacing={2} justifyContent="center">
@@ -152,7 +163,7 @@ const About = () => {
         </Grid>
       </Container>
     </Box>
-  );
-};
+  )
+}
 
-export default About;
+export default About
