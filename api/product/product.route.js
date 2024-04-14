@@ -214,7 +214,7 @@ router.post(
           brand: 1,
           price: 1,
           image: 1,
-          description: { $substr: ["$description", 0, 200] },
+          description: { $substr: ["$description", 0, 150] },
         },
       },
     ])
@@ -242,7 +242,7 @@ router.get("/product/carousel/list", async (req, res) => {
     price: product.price,
     brand: product.brand,
     image: product.image,
-    description: product.description.substring(0, 200),
+    description: product.description.substring(0, 130),
   }))
 
   return res.status(200).send({
