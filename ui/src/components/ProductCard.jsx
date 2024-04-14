@@ -14,7 +14,10 @@ const ProductCard = ({ name, brand, price, image, description, _id }) => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        // width: "100%",
+        transition: "transform 0.2s",
+        "&:hover": {
+          transform: "scale(1.05)",
+        },
         height: "100%",
         padding: "0rem 1rem 1rem 1rem",
         borderRadius: "10px",
@@ -27,13 +30,13 @@ const ProductCard = ({ name, brand, price, image, description, _id }) => {
           navigate(`/product/detail/${_id}`)
         }}
         style={{
-          objectFit: "contain",
+          objectFit: "cover",
           padding: "1rem 0",
           width: "100%",
-          height: "300px",
+          height: "250px",
           maxWidth: "400px",
           cursor: "pointer",
-          // maxHeight: "300px",
+          borderRadius: "10px !important",
         }}
         src={image}
         alt=""
