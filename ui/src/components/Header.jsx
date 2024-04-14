@@ -122,10 +122,14 @@ const Header = (props) => {
               <Typography
                 variant="h6"
                 component="div"
+                onClick={() => {
+                  navigate("/")
+                }}
                 sx={{
                   display: { xs: "block", md: "inline-block" }, // Display inline-block on medium and larger screens
                   width: { xs: "100%", md: "auto" }, // Adjust width for medium and larger screens
                   whiteSpace: "nowrap", // Prevent text from wrapping
+                  cursor: "pointer",
                 }}
               >
                 Subi Mart
