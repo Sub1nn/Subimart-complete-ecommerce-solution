@@ -1,34 +1,37 @@
-import * as React from "react";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import { useNavigate } from "react-router-dom";
+import * as React from "react"
+import Button from "@mui/material/Button"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogContentText from "@mui/material/DialogContentText"
+import DialogTitle from "@mui/material/DialogTitle"
+import { useNavigate } from "react-router-dom"
 
-const LogoutDialog = () => {
-  const [open, setOpen] = React.useState(false);
+const LogoutDialog = ({ onClose }) => {
+  const [open, setOpen] = React.useState(false)
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const handleClickOpen = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
 
   const handleClose = () => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
   const handleLogout = () => {
-    setOpen(false);
-    localStorage.clear();
-    navigate("/login");
-  };
+    setOpen(false)
+    localStorage.clear()
+    {
+      onClose
+    }
+    navigate("/login")
+  }
 
   return (
     <React.Fragment>
-      <Button sx={{ color: "#fff" }} onClick={handleClickOpen}>
+      <Button sx={{ color: "red" }} onClick={handleClickOpen}>
         Logout
       </Button>
       <Dialog
@@ -56,7 +59,7 @@ const LogoutDialog = () => {
         </DialogActions>
       </Dialog>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default LogoutDialog;
+export default LogoutDialog
