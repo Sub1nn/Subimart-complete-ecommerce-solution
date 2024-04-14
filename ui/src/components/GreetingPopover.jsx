@@ -2,6 +2,8 @@ import React from "react"
 import Popover from "@mui/material/Popover"
 import Typography from "@mui/material/Typography"
 import Button from "@mui/material/Button"
+import LogoutDialog from "./LogoutDialog"
+import { Divider, Stack } from "@mui/material"
 
 const GreetingPopover = () => {
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -17,10 +19,17 @@ const GreetingPopover = () => {
   const open = Boolean(anchorEl)
   const id = open ? "simple-popover" : undefined
 
+  let name = localStorage.getItem("name")
+
   return (
     <div>
-      <Button aria-describedby={id} variant="contained" onClick={handleClick}>
-        Open Popover
+      <Button
+        aria-describedby={id}
+        variant="text"
+        onClick={handleClick}
+        sx={{ width: "115px" }}
+      >
+        Hello {name}
       </Button>
       <Popover
         id={id}
@@ -32,7 +41,16 @@ const GreetingPopover = () => {
           horizontal: "left",
         }}
       >
-        <Typography sx={{ p: 2 }}>The content of the Popover.</Typography>
+        <Stack
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          sx={{ backgroundColor: "#f0f0f0", padding: "8px" }}
+        >
+          <Typography sx={{ p: 2, color: "#008700" }}>Dashboard</Typography>
+          <Divider variant="middle" component="ol" sx={{ width: "100%" }} />
+          <LogoutDialog onClose={handleClose} />
+        </Stack>
       </Popover>
     </div>
   )
