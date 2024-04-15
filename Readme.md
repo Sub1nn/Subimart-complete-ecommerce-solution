@@ -50,6 +50,7 @@ Check out the live site [here]().
 - **MongoDB**: NoSQL database for storing product and user data.
 - **Node.js**: JavaScript runtime environment for server-side logic.
 - **Axios**: Promise-based HTTP client for making requests to the server.
+- **Redux Toolkit**: State management library for managing application state.
 - **Formik**: Form library for handling form validation and submission.
 - **Yup**: JavaScript schema builder for form validation.
 - **Styled Components**: CSS-in-JS library for styling React components.
