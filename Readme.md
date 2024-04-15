@@ -1,4 +1,4 @@
-# Cutting-Edge E-Commerce Platform
+# SUBI Mart> A Cutting-Edge E-Commerce Platform
 
 Welcome to our cutting-edge e-commerce platform! We're reshaping the online shopping experience with a seamless and secure environment for buying and selling goods. Our platform leverages the power of the MERN stack, combining MongoDB, Express.js, React, and Node.js, to deliver an intuitive and robust solution for all your e-commerce needs.
 
@@ -29,8 +29,8 @@ Check out the live site [here]().
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/your-username/e-commerce-app.git`
-2. Navigate to the project directory: `cd e-commerce-app`
+1. Clone the repository: `git clone https://github.com/Sub1nn/ecommerce-v1.git`
+2. Navigate to the project directory: `cd ecommerce-v1`
 3. ### Install the dependencies
 
 - **For UI**: `cd ui && npm install`
