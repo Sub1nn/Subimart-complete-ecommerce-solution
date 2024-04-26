@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import ProductCard from "../components/ProductCard";
-import { useQuery } from "react-query";
-import $axios from "../../lib/axios.instance";
+import React, { useState } from "react"
+import Footer from "../components/Footer"
+import Header from "../components/Header"
+import ProductCard from "../components/ProductCard"
+import { useQuery } from "react-query"
+import $axios from "../../lib/axios.instance"
 import {
   Box,
   CircularProgress,
@@ -11,17 +11,17 @@ import {
   Pagination,
   Stack,
   TextField,
-} from "@mui/material";
-import Loader from "../components/Loader";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import { useSelector } from "react-redux";
-import NoProductFound from "../components/NoProductFound";
+} from "@mui/material"
+import Loader from "../components/Loader"
+import AccountCircle from "@mui/icons-material/AccountCircle"
+import { useSelector } from "react-redux"
+import NoProductFound from "../components/NoProductFound"
 
 const BuyerProductList = () => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(1)
 
   const { searchText, category, minPrice, maxPrice, isFilterApplied } =
-    useSelector((state) => state.product);
+    useSelector((state) => state.product)
 
   const { isLoading, isError, data, error } = useQuery({
     queryKey: ["buyer-product-list", page, searchText, category],
@@ -34,19 +34,19 @@ const BuyerProductList = () => {
         minPrice: minPrice || null,
         maxPrice: maxPrice || null,
         isFilterApplied: isFilterApplied,
-      });
+      })
     },
-  });
-  // console.log(data);
-  const productData = data?.data?.products;
-  const totalPages = data?.data?.numberOfPages;
-  // console.log(productData);
+  })
+  console.log(data)
+  const productData = data?.data?.products
+  const totalPages = data?.data?.numberOfPages
+  // console.log(productData)
 
   if (isLoading) {
-    return <Loader />;
+    return <Loader />
   }
   if (productData.length === 0) {
-    return <NoProductFound />;
+    return <NoProductFound />
   }
   return (
     <>
@@ -56,7 +56,7 @@ const BuyerProductList = () => {
             <Grid key={item._id} item xs={12} sm={6} md={4} lg={3}>
               <ProductCard {...item} />
             </Grid>
-          );
+          )
         })}
       </Grid>
       <Pagination
@@ -65,11 +65,11 @@ const BuyerProductList = () => {
         count={totalPages}
         color="secondary"
         onChange={(event, value) => {
-          setPage(value);
+          setPage(value)
         }}
       />
     </>
-  );
-};
+  )
+}
 
-export default BuyerProductList;
+export default BuyerProductList
