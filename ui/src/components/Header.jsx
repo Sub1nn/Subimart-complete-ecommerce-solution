@@ -1,6 +1,6 @@
 import MenuIcon from "@mui/icons-material/Menu"
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined"
-import { Badge, ThemeProvider, createTheme } from "@mui/material"
+import { Badge, ThemeProvider, Tooltip, createTheme } from "@mui/material"
 import AppBar from "@mui/material/AppBar"
 import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
@@ -23,6 +23,7 @@ import ThemeToggle from "./ThemeToggle"
 import { useDispatch } from "react-redux"
 import { clearFilter } from "../store/slices/productSlice"
 import GreetingPopover from "./GreetingPopover"
+import { AddToQueue } from "@mui/icons-material"
 
 const drawerWidth = 240
 const navItems = [
@@ -160,7 +161,7 @@ const Header = (props) => {
               ))}
             </Box>
             <Box sx={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-              {userRole === "buyer" && (
+              {userRole === "buyer" ? (
                 <IconButton
                   size="large"
                   onClick={() => {
@@ -175,6 +176,18 @@ const Header = (props) => {
                     <ShoppingCartOutlinedIcon sx={{ color: "white" }} />
                   </Badge>
                 </IconButton>
+              ) : (
+                <Tooltip title="Add Product" arrow>
+                  <IconButton
+                    size="small"
+                    color="inherit"
+                    onClick={() => {
+                      navigate("/product/add")
+                    }}
+                  >
+                    <AddToQueue />
+                  </IconButton>
+                </Tooltip>
               )}
               <GreetingPopover />
             </Box>
