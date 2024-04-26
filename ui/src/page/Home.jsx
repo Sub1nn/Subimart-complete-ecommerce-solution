@@ -1,8 +1,8 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 // import { Carousel } from "react-responsive-carousel"
 import "react-responsive-carousel/lib/styles/carousel.min.css"
 import { Link, useNavigate, useParams } from "react-router-dom"
-import "./home.css"
+// import "./home.css"
 import { useQuery } from "react-query"
 import $axios from "../../lib/axios.instance"
 import Loader from "../components/Loader"
@@ -12,36 +12,40 @@ import SlidingCarousel from "../components/Carousel"
 
 const Home = () => {
   const navigate = useNavigate()
+  const [popularProducts, setPopularProducts] = useState([])
+  const { id } = useParams()
 
   const { isLoading, data } = useQuery({
-    queryKey: ["product-carousel"],
+    queryKey: ["product-popular"],
     queryFn: async () => {
-      return await $axios.get("/product/carousel/list")
+      return await $axios.get("/product/popular/list")
     },
   })
+  console.log(data)
+
+  useEffect(() => {
+    if (!isLoading && data) {
+      const products = data?.data?.products || []
+      // Shuffle the products array
+      const shuffledProducts = products.sort(() => Math.random() - 0.5)
+      // Limiting popular products to 7 items
+      const limitedProducts = shuffledProducts.slice(0, 7)
+      setPopularProducts(limitedProducts)
+    }
+  }, [isLoading, data])
+
+  console.log(data)
   const productData = data?.data?.products
+  console.log(productData)
+
   if (isLoading) {
     return <Loader />
   }
-  // Limiting popular products to 6 items
-  // Ensure productData is not empty before slicing
-  const popularProducts =
-    productData && productData.length > 0 ? productData.slice(0, 6) : []
 
   return (
     <>
       <SlidingCarousel />
-      <div
-        style={{
-          marginTop: "3rem",
-          display: "flex",
-          justifyContent: "flex-end",
-        }}
-      >
-        <Typography variant="h3" sx={{ fontWeight: "bold", textAlign: "left" }}>
-          Popular Products
-        </Typography>
-      </div>
+
       <Grid container spacing={4} justifyContent="center" mt={"1px"}>
         {popularProducts.map((item) => {
           if (item && item.id) {
@@ -49,7 +53,13 @@ const Home = () => {
               <Grid key={item.id} item xs={12} sm={6} md={4} lg={3}>
                 <ProductCard
                   {...item}
-                  onClick={() => navigate(`/product/detail/${item.id}`)}
+                  onClick={() => {
+                    if (item.id) {
+                      navigate(`/product/detail/${item.id}`)
+                    } else {
+                      console.error("Item ID is undefined:", item)
+                    }
+                  }}
                 />
               </Grid>
             )
