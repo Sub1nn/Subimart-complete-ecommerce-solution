@@ -2,7 +2,7 @@ import GuestGuard from "../guards/GuestGuard"
 import MinimumLayout from "../layout/MinimumLayout"
 import Login from "../page/Login"
 import Register from "../page/Register"
-import Practice from "../page/practice"
+// import Practice from "../page/practice"
 
 const guestRoutes = [
   {
@@ -21,10 +21,10 @@ const guestRoutes = [
         path: "register",
         element: <Register />,
       },
-      {
-        path: "practice",
-        element: <Practice />,
-      },
+      // {
+      //   path: "practice",
+      //   element: <Practice />,
+      // },
     ],
   },
 ]
