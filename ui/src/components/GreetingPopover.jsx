@@ -27,7 +27,7 @@ const GreetingPopover = () => {
         aria-describedby={id}
         variant="text"
         onClick={handleClick}
-        sx={{ width: "115px" }}
+        sx={{ width: "150px", fontSize: "1rem", color: "white" }}
       >
         Hello {name}
       </Button>

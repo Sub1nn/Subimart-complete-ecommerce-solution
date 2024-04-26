@@ -17,6 +17,7 @@ import * as React from "react"
 import { useDispatch } from "react-redux"
 import * as Yup from "yup"
 import { setCategory, setMaxPrice } from "../store/slices/productSlice"
+import { FilterAltOutlined } from "@mui/icons-material"
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
@@ -48,7 +49,11 @@ const ProductFilter = () => {
 
   return (
     <React.Fragment>
-      <Button variant="contained" onClick={handleClickOpen}>
+      <Button
+        color="success"
+        startIcon={<FilterAltOutlined />}
+        onClick={handleClickOpen}
+      >
         Filter
       </Button>
       <Dialog

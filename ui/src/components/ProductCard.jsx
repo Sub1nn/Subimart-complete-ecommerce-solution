@@ -13,6 +13,9 @@ const ProductCard = ({ name, brand, price, image, description, _id }) => {
     <Card
       sx={{
         display: "flex",
+        minWidth: {
+          lg: "400px",
+        },
         flexDirection: "column",
         transition: "transform 0.2s",
         "&:hover": {
@@ -31,12 +34,12 @@ const ProductCard = ({ name, brand, price, image, description, _id }) => {
         }}
         style={{
           objectFit: "cover",
-          padding: "1rem 0",
           width: "100%",
           height: "250px",
           maxWidth: "400px",
           cursor: "pointer",
-          borderRadius: "10px !important",
+          borderRadius: "5px",
+          margin: "1rem 0",
         }}
         src={image}
         alt=""

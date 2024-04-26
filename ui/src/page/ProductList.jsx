@@ -1,27 +1,29 @@
-import React from "react";
-import SellerProductList from "./SellerProductList";
-import BuyerProductList from "./BuyerProductList";
-import { Box, Button, Stack, TextField, useMediaQuery } from "@mui/material";
-import ProductFilter from "../components/ProductFilter";
-import SearchProduct from "../components/SearchProduct";
-import { useDispatch, useSelector } from "react-redux";
-import { clearFilter } from "../store/slices/productSlice";
+import React from "react"
+import SellerProductList from "./SellerProductList"
+import BuyerProductList from "./BuyerProductList"
+import { Box, Button, Stack, TextField, useMediaQuery } from "@mui/material"
+import ProductFilter from "../components/ProductFilter"
+import SearchProduct from "../components/SearchProduct"
+import { useDispatch, useSelector } from "react-redux"
+import { clearFilter } from "../store/slices/productSlice"
+import { FilterAltOffOutlined } from "@mui/icons-material"
 
 const ProductList = () => {
-  const dispatch = useDispatch();
-  const userRole = localStorage.getItem("role");
+  const dispatch = useDispatch()
+  const userRole = localStorage.getItem("role")
 
-  const { isFilterApplied } = useSelector((state) => state.product);
+  const { isFilterApplied } = useSelector((state) => state.product)
 
   return (
     <>
       <Stack direction={"row"} spacing={4} mb={"1rem"}>
         {isFilterApplied && (
           <Button
-            variant="contained"
+            variant="text"
+            startIcon={<FilterAltOffOutlined />}
             color="error"
             onClick={() => {
-              dispatch(clearFilter());
+              dispatch(clearFilter())
             }}
           >
             clear filter
@@ -38,7 +40,7 @@ const ProductList = () => {
         {userRole === "seller" ? <SellerProductList /> : <BuyerProductList />}
       </Box>
     </>
-  );
-};
+  )
+}
 
-export default ProductList;
+export default ProductList

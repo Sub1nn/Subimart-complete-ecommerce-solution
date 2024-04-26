@@ -69,7 +69,17 @@ const CartItem = ({
   }
 
   return (
-    <Box sx={{ mt: "1rem", width: { xs: "100%", md: "auto", lg: "900px" } }}>
+    <Box
+      sx={{
+        mt: "1rem",
+        width: {
+          xs: "auto",
+          lg: "900px",
+        },
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
       {(isUpdateQuantityLoading || isLoading) && (
         <LinearProgress color="secondary" />
       )}
@@ -81,22 +91,22 @@ const CartItem = ({
             md: "row",
           },
           width: {
-            xs: "100%",
+            xs: "80%",
+            md: "100%",
           },
+
           padding: "1rem",
 
           justifyContent: {
-            sx: "center",
+            xs: "center",
             lg: "space-around",
           },
           alignItems: "center",
           borderRadius: "10px",
           gap: "2rem",
 
-          boxShadow: {
-            xs: "none",
-            md: "rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px",
-          },
+          boxShadow:
+            "rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px",
         }}
       >
         <Grid item>
@@ -107,9 +117,10 @@ const CartItem = ({
             }
             alt={name}
             style={{
-              height: "200px",
+              height: "150px",
               width: "200px",
-              objectFit: "contain",
+              objectFit: "cover",
+              borderRadius: "5px",
             }}
           />
         </Grid>
