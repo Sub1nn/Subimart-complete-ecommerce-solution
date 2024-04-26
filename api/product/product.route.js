@@ -138,7 +138,7 @@ router.post(
       }
     }
 
-    //create the query
+    // create aggregation query
 
     let products = await Product.aggregate([
       {
@@ -156,7 +156,7 @@ router.post(
           price: 1,
           brand: 1,
           image: 1,
-          description: { $substr: ["$description", 0, 200] },
+          description: { $substr: ["$description", 0, 150] },
         },
       },
     ])
@@ -180,7 +180,7 @@ router.post(
   validateReqBody(paginationSchema),
   async (req, res) => {
     // extract pagination data from req.body
-    const { page, limit, searchText } = req.body
+    const { page, limit, searchText, category, minPrice, maxPrice } = req.body
 
     // calculate skip
     const skip = (page - 1) * limit
@@ -192,6 +192,19 @@ router.post(
       match = {
         ownerId: req.loggedInUserId,
         name: { $regex: searchText, $options: "i" },
+      }
+    }
+    if (category) {
+      match = { ...match, category: category }
+    }
+
+    if (minPrice || maxPrice) {
+      match = {
+        ...match,
+        price: {
+          ...(minPrice ? { $gte: minPrice } : {}),
+          ...(maxPrice ? { $lte: maxPrice } : {}),
+        },
       }
     }
 
@@ -248,6 +261,26 @@ router.get("/product/carousel/list", async (req, res) => {
   return res.status(200).send({
     message: "success",
     products: carouselProducts,
+  })
+})
+
+// get all popular products
+router.get("/product/popular/list", async (req, res) => {
+  const products = await Product.find()
+
+  const popularProducts = products.map((product) => ({
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    brand: product.brand,
+    image: product.image,
+    description: product.description.substring(0, 130),
+  }))
+  // console.log(popularProducts)
+
+  return res.status(200).send({
+    message: "success",
+    products: popularProducts,
   })
 })
 
