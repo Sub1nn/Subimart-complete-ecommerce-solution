@@ -12,18 +12,19 @@ import {
   TextField,
   Typography,
   useMediaQuery,
-} from "@mui/material";
-import { useMutation } from "react-query";
-import { Formik } from "formik";
-import React, { useState } from "react";
-import * as Yup from "yup";
-import $axios from "../../lib/axios.instance";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+} from "@mui/material"
+import { useMutation } from "react-query"
+import { Formik } from "formik"
+import React, { useState } from "react"
+import * as Yup from "yup"
+import $axios from "../../lib/axios.instance"
+import { useNavigate } from "react-router-dom"
+import { useDispatch } from "react-redux"
 import {
   openErrorSnackbar,
   openSuccessSnackbar,
-} from "../store/slices/snackbar.slice";
+} from "../store/slices/snackbar.slice"
+import axios from "axios"
 
 const categories = [
   "electronics",
@@ -34,7 +35,7 @@ const categories = [
   "furniture",
   "sports",
   "stationery",
-];
+]
 
 const currencies = [
   {
@@ -53,42 +54,43 @@ const currencies = [
     value: "JPY",
     label: "¥",
   },
-];
+]
 
 const AddProduct = () => {
-  const [productImage, setProductImage] = useState(null);
-  const [localUrl, setLocalUrl] = useState(null);
+  const [productImage, setProductImage] = useState(null)
+  const [localUrl, setLocalUrl] = useState(null)
+  const [imageLoading, setImageLoading] = useState(false)
 
-  console.log(localUrl);
-  const [category, setCategory] = React.useState("");
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  // console.log(localUrl);
+  const [category, setCategory] = React.useState("")
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"))
   const isMedium = useMediaQuery((theme) =>
     theme.breakpoints.between("sm", "md")
-  );
+  )
   const isLarge = useMediaQuery((theme) =>
     theme.breakpoints.between("md", "lg")
-  );
-  const isExtraLarge = useMediaQuery((theme) => theme.breakpoints.up("lg"));
+  )
+  const isExtraLarge = useMediaQuery((theme) => theme.breakpoints.up("lg"))
 
   const { isLoading, mutate: addProduct } = useMutation({
     mutationKey: ["add-product"],
     mutationFn: async (values) => {
-      return await $axios.post("/product/add", values);
+      return await $axios.post("/product/add", values)
     },
     onSuccess: (response) => {
-      navigate("/product/list");
-      dispatch(openSuccessSnackbar(response?.data?.message));
+      navigate("/product/list")
+      dispatch(openSuccessSnackbar(response?.data?.message))
     },
     onError: (error) => {
-      dispatch(openErrorSnackbar(error?.response?.data?.message));
+      dispatch(openErrorSnackbar(error?.response?.data?.message))
     },
-  });
+  })
 
   const handleChange = (event) => {
-    setCategory(event.target.value);
-  };
+    setCategory(event.target.value)
+  }
 
   return (
     <Box
@@ -98,7 +100,7 @@ const AddProduct = () => {
         justifyContent: "center",
       }}
     >
-      {isLoading && <LinearProgress color="secondary" />}
+      {(isLoading || imageLoading) && <LinearProgress color="secondary" />}
       <Formik
         initialValues={{
           name: "",
@@ -134,8 +136,34 @@ const AddProduct = () => {
             .trim()
             .max(1000, "Description must be at max 1000 characters."),
         })}
-        onSubmit={(values) => {
-          addProduct(values);
+        onSubmit={async (values) => {
+          let imageUrl = ""
+          if (productImage) {
+            const cloudName = "de9pwc3cf"
+
+            // creates form data object
+            const data = new FormData()
+            data.append("file", productImage)
+            data.append("upload_preset", "subi-mart")
+            data.append("cloud_name", cloudName)
+
+            try {
+              setImageLoading(true)
+              const response = await axios.post(
+                `https://api.cloudinary.com/v1_1/${cloudName}/upload`,
+                data
+              )
+
+              imageUrl = response?.data?.secure_url
+              setImageLoading(false)
+            } catch (error) {
+              setImageLoading(false)
+              dispatch(openErrorSnackbar("Image upload failed"))
+            }
+          }
+
+          values.image = imageUrl
+          addProduct(values)
         }}
       >
         {({ errors, touched, getFieldProps, handleSubmit }) => {
@@ -163,9 +191,9 @@ const AddProduct = () => {
                 <input
                   type="file"
                   onChange={(event) => {
-                    const file = event?.target?.files[0];
-                    setProductImage(file);
-                    setLocalUrl(URL.createObjectURL(file));
+                    const file = event?.target?.files[0]
+                    setProductImage(file)
+                    setLocalUrl(URL.createObjectURL(file))
                   }}
                 />
               </FormControl>
@@ -231,7 +259,7 @@ const AddProduct = () => {
                           {item}
                         </Typography>
                       </MenuItem>
-                    );
+                    )
                   })}
                 </Select>
                 {touched.category && errors.category ? (
@@ -259,11 +287,11 @@ const AddProduct = () => {
                 Submit
               </Button>
             </form>
-          );
+          )
         }}
       </Formik>
     </Box>
-  );
-};
+  )
+}
 
-export default AddProduct;
+export default AddProduct
