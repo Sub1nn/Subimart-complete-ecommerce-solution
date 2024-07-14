@@ -1,6 +1,6 @@
 import express from "express";
 import { validateReqBody } from "../middleware/validation.middleware.js";
-import { loginUser, registerUser } from "./user.service.js";
+import { loginUser, registerUser, verifyUser } from "./user.service.js";
 import { loginUserSchema, userSchema } from "./user.validation.js";
 import { User } from "./user.model.js";
 import sendEmail from "../utils/email.js";
@@ -15,10 +15,13 @@ const router = express.Router();
 
 router.post(
   "/user/register",
-  // registering user takes two functions, one for validating and another for creating the user. Here we are using the validateReqBody global validation function and passing the userSchema to the function for validation.
+  // registering user takes three functions, one for validating, another for creating the user and the other is for verifying user through otp.
   validateReqBody(userSchema),
   registerUser
 );
+
+// verify user
+router.post("/user/verify", verifyUser);
 
 // login user
 
