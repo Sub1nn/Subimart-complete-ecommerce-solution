@@ -1,19 +1,19 @@
-import express from "express"
-import { validateReqBody } from "../middleware/validation.middleware.js"
-import { buyerPaginationSchema, productSchema } from "./product.validation.js"
+import express from "express";
+import { validateReqBody } from "../middleware/validation.middleware.js";
+import { buyerPaginationSchema, productSchema } from "./product.validation.js";
 import {
   isBuyer,
   isSeller,
   isUser,
-} from "../middleware/authentication.middleware.js"
-import Product from "./product.model.js"
+} from "../middleware/authentication.middleware.js";
+import Product from "./product.model.js";
 // import mongoose from "mongoose";
-import { checkMongoIdValidity } from "../utils/check.mongo.id.validity.js"
-import { checkProductOwnership } from "../middleware/check.product.ownership.js"
-import { paginationSchema } from "./product.validation.js"
-import Cart from "../cart/cart.model.js"
+import { checkMongoIdValidity } from "../utils/check.mongo.id.validity.js";
+import { checkProductOwnership } from "../middleware/check.product.ownership.js";
+import { paginationSchema } from "./product.validation.js";
+import Cart from "../cart/cart.model.js";
 
-const router = express.Router()
+const router = express.Router();
 
 // add product
 
@@ -23,17 +23,17 @@ router.post(
   validateReqBody(productSchema),
   async (req, res) => {
     //    extract new product from req.body
-    const newProduct = req.body
+    const newProduct = req.body;
 
     // set loggedInUserId as newProduct.ownerId
-    newProduct.ownerId = req.loggedInUser._id
+    newProduct.ownerId = req.loggedInUser._id;
 
     // create product
-    await Product.create(newProduct)
+    await Product.create(newProduct);
 
-    return res.status(200).send({ message: "Product is added successfully." })
+    return res.status(200).send({ message: "Product is added successfully." });
   }
-)
+);
 
 // get a single product details from product :id
 
@@ -43,26 +43,26 @@ router.get(
   checkMongoIdValidity,
   async (req, res) => {
     // extract id from req.params
-    const productId = req.params.id
+    const productId = req.params.id;
 
     // find product and keep in a variable requiredProduct
-    const requiredProduct = await Product.findOne({ _id: productId })
+    const requiredProduct = await Product.findOne({ _id: productId });
 
     // if not product, throw error
 
     if (!requiredProduct) {
-      return res.status(404).send({ message: "Product does not exist." })
+      return res.status(404).send({ message: "Product does not exist." });
     }
 
     //   hide ownerId
-    requiredProduct.ownerId = undefined
+    requiredProduct.ownerId = undefined;
 
     // send product details as response
     return res
       .status(200)
-      .send({ message: "success", product: requiredProduct })
+      .send({ message: "success", product: requiredProduct });
   }
-)
+);
 
 // delete product
 
@@ -73,14 +73,14 @@ router.delete(
   checkProductOwnership,
   async (req, res) => {
     // get id from req.params
-    const productId = req.params.id
+    const productId = req.params.id;
     // delete that one product
-    await Product.deleteOne({ _id: productId })
+    await Product.deleteOne({ _id: productId });
     // remove the product form cart
-    await Cart.deleteMany({ productId: productId })
-    return res.status(200).send({ message: "Product is deleted successfully" })
+    await Cart.deleteMany({ productId: productId });
+    return res.status(200).send({ message: "Product is deleted successfully" });
   }
-)
+);
 
 // edit a product
 
@@ -92,15 +92,15 @@ router.put(
   validateReqBody(productSchema),
   async (req, res) => {
     // get id from req.params
-    const { id } = req.params
+    const { id } = req.params;
     // get new values from req.body
-    const newValues = req.body
+    const newValues = req.body;
     // update product
-    await Product.updateOne({ _id: id }, { $set: { ...newValues } })
+    await Product.updateOne({ _id: id }, { $set: { ...newValues } });
     // send response with message
-    return res.status(200).send({ message: "Product is updated successfully" })
+    return res.status(200).send({ message: "Product is updated successfully" });
   }
-)
+);
 
 // get all product list by buyer
 
@@ -112,20 +112,20 @@ router.post(
     // console.log(req.body)
 
     // extract pagination data from req.body
-    const { page, limit, searchText, category, minPrice, maxPrice } = req.body
+    const { page, limit, searchText, category, minPrice, maxPrice } = req.body;
     // calculate skip
-    const skip = (page - 1) * limit
+    const skip = (page - 1) * limit;
 
     // filter stage
 
-    let match = {}
+    let match = {};
 
     if (searchText) {
-      match = { name: { $regex: searchText, $options: "i" } }
+      match = { name: { $regex: searchText, $options: "i" } };
     }
 
     if (category) {
-      match = { ...match, category: category }
+      match = { ...match, category: category };
     }
 
     if (minPrice || maxPrice) {
@@ -135,7 +135,7 @@ router.post(
           ...(minPrice ? { $gte: minPrice } : {}),
           ...(maxPrice ? { $lte: maxPrice } : {}),
         },
-      }
+      };
     }
 
     // create aggregation query
@@ -159,19 +159,19 @@ router.post(
           description: { $substr: ["$description", 0, 150] },
         },
       },
-    ])
+    ]);
 
     // calculate number of page
-    const totalProduct = await Product.find(match).countDocuments()
-    const numberOfPages = Math.ceil(totalProduct / limit)
+    const totalProduct = await Product.find(match).countDocuments();
+    const numberOfPages = Math.ceil(totalProduct / limit);
 
     return res.status(200).send({
       message: "success",
       products: products,
       numberOfPages: numberOfPages,
-    })
+    });
   }
-)
+);
 
 // get all product list by seller
 router.post(
@@ -180,22 +180,22 @@ router.post(
   validateReqBody(paginationSchema),
   async (req, res) => {
     // extract pagination data from req.body
-    const { page, limit, searchText, category, minPrice, maxPrice } = req.body
+    const { page, limit, searchText, category, minPrice, maxPrice } = req.body;
 
     // calculate skip
-    const skip = (page - 1) * limit
+    const skip = (page - 1) * limit;
 
     // filter stage
-    let match = { ownerId: req.loggedInUserId }
+    let match = { ownerId: req.loggedInUserId };
 
     if (searchText) {
       match = {
         ownerId: req.loggedInUserId,
         name: { $regex: searchText, $options: "i" },
-      }
+      };
     }
     if (category) {
-      match = { ...match, category: category }
+      match = { ...match, category: category };
     }
 
     if (minPrice || maxPrice) {
@@ -205,7 +205,7 @@ router.post(
           ...(minPrice ? { $gte: minPrice } : {}),
           ...(maxPrice ? { $lte: maxPrice } : {}),
         },
-      }
+      };
     }
 
     let products = await Product.aggregate([
@@ -230,24 +230,24 @@ router.post(
           description: { $substr: ["$description", 0, 150] },
         },
       },
-    ])
+    ]);
 
     // calculate number of page
-    const totalProduct = await Product.find(match).countDocuments()
-    const numberOfPages = Math.ceil(totalProduct / limit)
+    const totalProduct = await Product.find(match).countDocuments();
+    const numberOfPages = Math.ceil(totalProduct / limit);
 
     return res.status(200).send({
       message: "success",
       products: products,
       numberOfPages: numberOfPages,
-    })
+    });
   }
-)
+);
 
 // get all products for carousel
 
 router.get("/product/carousel/list", async (req, res) => {
-  const products = await Product.find()
+  const products = await Product.find();
 
   const carouselProducts = products.map((product) => ({
     id: product.id,
@@ -256,17 +256,17 @@ router.get("/product/carousel/list", async (req, res) => {
     brand: product.brand,
     image: product.image,
     description: product.description.substring(0, 130),
-  }))
+  }));
 
   return res.status(200).send({
     message: "success",
     products: carouselProducts,
-  })
-})
+  });
+});
 
 // get all popular products
 router.get("/product/popular/list", async (req, res) => {
-  const products = await Product.find()
+  const products = await Product.find();
 
   const popularProducts = products.map((product) => ({
     id: product.id,
@@ -275,13 +275,13 @@ router.get("/product/popular/list", async (req, res) => {
     brand: product.brand,
     image: product.image,
     description: product.description.substring(0, 130),
-  }))
+  }));
   // console.log(popularProducts)
 
   return res.status(200).send({
     message: "success",
     products: popularProducts,
-  })
-})
+  });
+});
 
-export default router
+export default router;
