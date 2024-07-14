@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import { User } from "./user.model.js";
 import jwt from "jsonwebtoken";
 import sendEmail from "../utils/email.js";
+import otpGenerator from "otp-generator";
 
 // register new user
 
@@ -22,28 +23,56 @@ export const registerUser = async (req, res) => {
   newUser.password = hashedPassword;
 
   // create user
-  await User.create(newUser);
+  const createdUser = await User.create(newUser);
 
-  // Send the verification link link to the user's email
-  const resetURL = `${req.protocol}://${req.get(
-    "host"
-  )}/verify-email/${encodeURIComponent(newUser.email)}`;
-  const message = `Click on the following link to verify your email: ${resetURL}`;
+  // generate OTP
+  const otp = otpGenerator.generate(6, {
+    upperCase: false,
+    specialChars: false,
+  });
+
+  // save OTP in user
+  createdUser.otp = otp;
+  // set OTP expiration time
+  createdUser.otpExpires = Date.now() + 10 * 60 * 1000;
+  await createdUser.save();
+
+  const message = `Your OTP is: ${otp}`;
 
   try {
     await sendEmail({
       email: newUser.email,
-      subject: "verify email",
+      subject: "verify OTP",
       message,
     });
 
-    return res
-      .status(201)
-      .json({ message: "Verification link send to your Email" });
+    return res.status(201).json({ message: "OTP sent to your Email" });
   } catch (error) {
     console.error("Error sending email:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
+};
+
+// verify OTP
+export const verifyUser = async (req, res) => {
+  const { email, otp } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  if (user.otp !== otp || user.otpExpires < Date.now()) {
+    return res.status(400).json({ message: "Invalid or expired OTP" });
+  }
+
+  // if OTP is valid
+  user.otp = undefined;
+  user.otpExpires = undefined;
+  user.verified = true;
+  await user.save();
+
+  return res.status(200).json({ message: "Email verified successfully" });
 };
 
 // login user
