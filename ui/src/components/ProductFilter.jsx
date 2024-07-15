@@ -5,23 +5,27 @@ import {
   MenuItem,
   Select,
   TextField,
-} from "@mui/material"
-import Button from "@mui/material/Button"
-import Dialog from "@mui/material/Dialog"
-import DialogActions from "@mui/material/DialogActions"
-import DialogContent from "@mui/material/DialogContent"
-import DialogTitle from "@mui/material/DialogTitle"
-import Slide from "@mui/material/Slide"
-import { Formik } from "formik"
-import * as React from "react"
-import { useDispatch } from "react-redux"
-import * as Yup from "yup"
-import { setCategory, setMaxPrice } from "../store/slices/productSlice"
-import { FilterAltOutlined } from "@mui/icons-material"
+} from "@mui/material";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Slide from "@mui/material/Slide";
+import { Formik } from "formik";
+import * as React from "react";
+import { useDispatch } from "react-redux";
+import * as Yup from "yup";
+import {
+  setCategory,
+  setMaxPrice,
+  setMinPrice,
+} from "../store/slices/productSlice";
+import { FilterAltOutlined } from "@mui/icons-material";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />
-})
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const categories = [
   "electronics",
@@ -32,20 +36,20 @@ const categories = [
   "furniture",
   "sports",
   "stationery",
-]
+];
 
 const ProductFilter = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
-    setOpen(true)
-  }
+    setOpen(true);
+  };
 
   const handleClose = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   return (
     <React.Fragment>
@@ -93,22 +97,22 @@ const ProductFilter = () => {
                   name: "maxPrice",
                   message: "Max price must be greater than min price.",
                   test: function (value) {
-                    return value >= this.parent.minPrice
+                    return value >= this.parent.minPrice;
                   },
                 }),
             })}
             onSubmit={(values, { resetForm }) => {
               if (values.minPrice) {
-                dispatch(setMaxPrice(values?.minPrice))
+                dispatch(setMinPrice(values?.minPrice));
               }
               if (values.maxPrice) {
-                dispatch(setMaxPrice(values?.maxPrice))
+                dispatch(setMaxPrice(values?.maxPrice));
               }
               if (values.category) {
-                dispatch(setCategory(values?.category))
+                dispatch(setCategory(values?.category));
               }
-              handleClose()
-              resetForm()
+              handleClose();
+              resetForm();
             }}
           >
             {({ handleSubmit, getFieldProps, touched, errors }) => (
@@ -133,7 +137,7 @@ const ProductFilter = () => {
                         >
                           {category}
                         </MenuItem>
-                      )
+                      );
                     })}
                   </Select>
                 </FormControl>
@@ -175,7 +179,7 @@ const ProductFilter = () => {
         </DialogContent>
       </Dialog>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default ProductFilter
+export default ProductFilter;
