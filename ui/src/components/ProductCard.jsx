@@ -1,20 +1,20 @@
-import { Chip, Stack } from "@mui/material"
-import Button from "@mui/material/Button"
-import Card from "@mui/material/Card"
-import CardActions from "@mui/material/CardActions"
-import CardContent from "@mui/material/CardContent"
-import Typography from "@mui/material/Typography"
-import * as React from "react"
-import { useNavigate } from "react-router-dom"
+import { Chip, Stack } from "@mui/material";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import * as React from "react";
+import { useNavigate } from "react-router-dom";
 
 const ProductCard = ({ name, brand, price, image, description, _id }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <Card
       sx={{
         display: "flex",
         minWidth: {
-          lg: "400px",
+          lg: "350px",
         },
         flexDirection: "column",
         transition: "transform 0.2s",
@@ -30,7 +30,7 @@ const ProductCard = ({ name, brand, price, image, description, _id }) => {
     >
       <img
         onClick={() => {
-          navigate(`/product/detail/${_id}`)
+          navigate(`/product/detail/${_id}`);
         }}
         style={{
           objectFit: "cover",
@@ -68,14 +68,14 @@ const ProductCard = ({ name, brand, price, image, description, _id }) => {
           fullWidth
           color="success"
           onClick={() => {
-            navigate(`/product/detail/${_id}`)
+            navigate(`/product/detail/${_id}`);
           }}
         >
           Explore
         </Button>
       </CardActions>
     </Card>
-  )
-}
+  );
+};
 
-export default ProductCard
+export default ProductCard;
