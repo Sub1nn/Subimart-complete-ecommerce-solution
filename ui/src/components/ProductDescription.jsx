@@ -1,10 +1,10 @@
-import { Button, Chip, Grid, Stack, Typography } from "@mui/material"
-import React from "react"
-import { useNavigate } from "react-router-dom"
-import DeleteIcon from "@mui/icons-material/Delete"
-import EditIcon from "@mui/icons-material/Edit"
-import DeleteProductDialogue from "./DeleteProductDialogue"
-import ItemCounter from "./ItemCounter"
+import { Button, Chip, Grid, Stack, Typography } from "@mui/material";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteProductDialogue from "./DeleteProductDialogue";
+import ItemCounter from "./ItemCounter";
 
 const ProductDescription = ({
   name,
@@ -15,9 +15,9 @@ const ProductDescription = ({
   quantity,
   _id,
 }) => {
-  const userRole = localStorage.getItem("role")
+  const userRole = localStorage.getItem("role");
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <Grid
       container
@@ -68,12 +68,12 @@ const ProductDescription = ({
 
       <Grid item mt="1rem">
         {userRole === "seller" && (
-          <Stack direction="row" spacing={4}>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={4}>
             <Button
               variant="contained"
               color="success"
               onClick={() => {
-                navigate(`/product/edit/${_id}`)
+                navigate(`/product/edit/${_id}`);
               }}
               startIcon={<EditIcon />}
             >
@@ -85,7 +85,7 @@ const ProductDescription = ({
         )}
       </Grid>
     </Grid>
-  )
-}
+  );
+};
 
-export default ProductDescription
+export default ProductDescription;

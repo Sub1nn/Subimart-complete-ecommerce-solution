@@ -1,5 +1,5 @@
-import { Grid, Stack, Typography } from "@mui/material"
-import React from "react"
+import { Grid, Stack, Typography } from "@mui/material";
+import React from "react";
 
 const Footer = () => {
   return (
@@ -17,7 +17,7 @@ const Footer = () => {
         Copyright @ Subi mart 2024
       </Typography>
     </Stack>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;
