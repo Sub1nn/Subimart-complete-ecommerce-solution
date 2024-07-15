@@ -1,45 +1,45 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 // import { Carousel } from "react-responsive-carousel"
-import "react-responsive-carousel/lib/styles/carousel.min.css"
-import { Link, useNavigate, useParams } from "react-router-dom"
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Link, useNavigate, useParams } from "react-router-dom";
 // import "./home.css"
-import { useQuery } from "react-query"
-import $axios from "../../lib/axios.instance"
-import Loader from "../components/Loader"
-import { Grid, Stack, Typography } from "@mui/material"
-import ProductCard from "../components/ProductCard"
-import SlidingCarousel from "../components/Carousel"
+import { useQuery } from "react-query";
+import $axios from "../../lib/axios.instance";
+import Loader from "../components/Loader";
+import { Grid, Stack, Typography } from "@mui/material";
+import ProductCard from "../components/ProductCard";
+import SlidingCarousel from "../components/Carousel";
 
 const Home = () => {
-  const navigate = useNavigate()
-  const [popularProducts, setPopularProducts] = useState([])
-  const { id } = useParams()
+  const navigate = useNavigate();
+  const [popularProducts, setPopularProducts] = useState([]);
+  const { id } = useParams();
 
   const { isLoading, data } = useQuery({
     queryKey: ["product-popular"],
     queryFn: async () => {
-      return await $axios.get("/product/popular/list")
+      return await $axios.get("/product/popular/list");
     },
-  })
-  console.log(data)
+  });
+  console.log(data);
 
   useEffect(() => {
     if (!isLoading && data) {
-      const products = data?.data?.products || []
+      const products = data?.data?.products || [];
       // Shuffle the products array
-      const shuffledProducts = products.sort(() => Math.random() - 0.5)
+      const shuffledProducts = products.sort(() => Math.random() - 0.5);
       // Limiting popular products to 7 items
-      const limitedProducts = shuffledProducts.slice(0, 7)
-      setPopularProducts(limitedProducts)
+      const limitedProducts = shuffledProducts.slice(0, 8);
+      setPopularProducts(limitedProducts);
     }
-  }, [isLoading, data])
+  }, [isLoading, data]);
 
-  console.log(data)
-  const productData = data?.data?.products
-  console.log(productData)
+  console.log(data);
+  const productData = data?.data?.products;
+  console.log(productData);
 
   if (isLoading) {
-    return <Loader />
+    return <Loader />;
   }
 
   return (
@@ -55,21 +55,21 @@ const Home = () => {
                   {...item}
                   onClick={() => {
                     if (item.id) {
-                      navigate(`/product/detail/${item.id}`)
+                      navigate(`/product/detail/${item.id}`);
                     } else {
-                      console.error("Item ID is undefined:", item)
+                      console.error("Item ID is undefined:", item);
                     }
                   }}
                 />
               </Grid>
-            )
+            );
           } else {
-            return null
+            return null;
           }
         })}
       </Grid>
     </>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
