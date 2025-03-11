@@ -29,19 +29,19 @@ Check out the live site [here]().
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/Sub1nn/ecommerce-v1.git`
+1. Clone the repository: `git clone https://github.com/Sub1nn/Subimart-complete-ecommerce-solution.git`
 2. Navigate to the project directory: `cd ecommerce-v1`
 3. ### Install the dependencies
 
 - **For UI**: `cd ui && npm install`
 - **For API**: `cd api && npm install`
 
-4. ### Install the dependencies
+4. ### Run the application
 
 - **For UI**: `npm run dev`
 - **For API**: `npm run dev`
 
-5. Open your web browser and visit http://localhost:3000 (or the specified port) to access the app.
+5. Open your web browser and visit http://localhost:5173 (or the specified port) to access the app.
 
 ## Technologies Used
 
@@ -54,6 +54,7 @@ Check out the live site [here]().
 - **Formik**: Form library for handling form validation and submission.
 - **Yup**: JavaScript schema builder for form validation.
 - **Styled Components**: CSS-in-JS library for styling React components.
+- **Docker**: For Containerization
 
 ## Contributing
 
